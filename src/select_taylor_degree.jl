@@ -69,7 +69,7 @@ function select_taylor_degree(A,
             eta[p] = c;
         end
         for p = 1:p_max-1
-            alpha[p] = max(eta(p),eta(p+1));
+            alpha[p] = max(eta[p],eta[p+1]);
         end
     end
     
