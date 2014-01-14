@@ -1,3 +1,5 @@
+export expmv
+
 function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
                # bal = false, 
 
