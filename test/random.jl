@@ -1,0 +1,19 @@
+using ExpmV
+using Base.Test
+
+for i = 1:100
+
+    d = 60
+
+    r = sprandn(d,d,.1)+1im*sprandn(d,d,.1);
+    #r = (r-r')/2;
+
+    rv = randn(d)+1im*randn(d);
+    rv = rv / norm(rv,2);
+    
+    rt = randn()
+
+    (x,_,_,_,_,_) = expmv(rt,r,rv)
+
+    @test_approx_eq_eps norm(x-expm(full(rt*r))*rv,2) 0.0 1e-9
+end
