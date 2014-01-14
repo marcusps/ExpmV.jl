@@ -12,14 +12,14 @@ rt = randn();
 
 full_r = full(rt*r);  
 
-function f1()
+function expmv_example()
   (x,_,_,_,_,_) = expmv(rt,r,rv)
   x
 end
 
-function f2()
+function expm_example()
   expm(full_r)*rv
 end
 
-compare([f1,f2],N)
+println(compare([expmv_example, expm_example],N))
 
