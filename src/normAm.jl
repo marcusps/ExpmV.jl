@@ -14,6 +14,7 @@ function normAm(A,m)
     t = 1; # Number of columns used by NORMEST1.
     
     n = length(A);
+
     if isequal(A,abs(A))
         e = ones(n,1);
         for j=1:m         # for positive matrices only
