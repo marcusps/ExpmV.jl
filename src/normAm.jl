@@ -15,6 +15,41 @@ function normAm(A,m)
     
     n = length(A);
 
+    # function afun_power(flag,X)
+    #     #AFUN_POWER  Function to evaluate matrix products needed by NORMEST1.
+    #     
+    #     if flag == "dim"
+    #         Z = n;
+    #     elseif flag == "real"
+    #         if isreal(A)
+    #             Z = 1
+    #         else
+    #             Z = 0
+    #         end
+    #     else
+    #         (p,q) = size(X);
+    #         if p != n, 
+    #             error("Dimension mismatch") 
+    #         end
+    #         
+    #         if flag=="notransp"
+    #             for i = 1:m
+    #                 X = A*X; 
+    #             end
+    #         elseif flag=="transp"
+    #             for i = 1:m
+    #                 X = A'*X
+    #             end
+    #         end
+    #         
+    #         Z = X;
+    #         
+    #     end
+    #     
+    #     return Z
+    # end
+
+
     if isequal(A,abs(A))
         e = ones(n,1);
         for j=1:m         # for positive matrices only
@@ -23,44 +58,13 @@ function normAm(A,m)
         c = norm(e,Inf);
         mv = m;
     else
-        (c,v,w,it) = normest1(@afun_power,t);
-        mv = it(2)*t*m;
+        #(c,_,_,it) = normest1(@afun_power,t);
+        #mv = it[2]*t*m;
+        c = norm(A^m,1);
+        mv = 6*t*m;
     end
     
     return (c,mv)
     
 end
 
-function afun_power(flag,X)
-    #AFUN_POWER  Function to evaluate matrix products needed by NORMEST1.
-    
-    if flag == "dim"
-        Z = n;
-    elseif flag == "real"
-        if isreal(A)
-            Z = 1
-        else
-            Z = 0
-        end
-    else
-        (p,q) = size(X);
-        if p != n, 
-            error("Dimension mismatch") 
-        end
-        
-        if flag=="notransp"
-            for i = 1:m
-                X = A*X; 
-            end
-        elseif flag=="transp"
-            for i = 1:m
-                X = A'*X
-            end
-        end
-        
-        Z = X;
-        
-    end
-    
-    return Z
-end
