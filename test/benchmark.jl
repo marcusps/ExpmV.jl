@@ -18,7 +18,7 @@ function f1()
 end
 
 function f2()
-  expm(rt*full_r)*rv
+  expm(full_r)*rv
 end
 
 compare([f1,f2],N)
