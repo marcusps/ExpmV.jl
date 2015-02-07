@@ -1,5 +1,7 @@
 # ExpmV
 
+**Please use the [Github repo](https://github.com/marcusps/ExpmV.jl)** 
+
 This is a Julia translation of the MATLAB implementation of Al-Mohy and Higham's
 function for computing `expm(A)*v` when `A` is sparse, without explicitly computing `expm(A)`.
 
