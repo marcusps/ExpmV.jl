@@ -130,5 +130,6 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #    f = D*f
     #end
     
-    return (f,s,m,mv,mvd,unA)
+    #return (f,s,m,mv,mvd,unA)
+    return f
 end
