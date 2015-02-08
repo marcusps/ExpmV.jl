@@ -47,3 +47,8 @@ println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
 c30=println(compare([expmv_example, expokit_example, expm_example],N))
 println(c30)
 
+rt,r,rv,full_r = setup(d,.5)
+println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
+c30=println(compare([expmv_example, expokit_example, expm_example],N))
+println(c30)
+

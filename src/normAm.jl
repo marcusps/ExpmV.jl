@@ -13,7 +13,7 @@ function normAm(A,m)
     
     t = 1; # Number of columns used by NORMEST1.
     
-    n = length(A);
+    n = size(A,1);
 
     # function afun_power(flag,X)
     #     #AFUN_POWER  Function to evaluate matrix products needed by NORMEST1.
