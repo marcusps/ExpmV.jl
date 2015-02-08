@@ -41,7 +41,7 @@ Although both the `ExpmV.jl` and `Expokit.jl` implementations are in the early s
 | 2   | `Expokit.jl` | 0.00976355 | 1.0      | 100          |
 | 3   | Julia's dense `expm`    | 0.026019   | 2.66491  | 100          |
 
-Clearly the current `ExpmV.jl` implementation needs to be looked at more carefully in high density cases, but at low densities it performs well.
+Clearly the current `ExpmV.jl` implementation needs to be looked at more carefully in high density cases, but at low densities it performs well (See [Issue #1](https://github.com/marcusps/ExpmV.jl/issues/1))
 
 ## License
 
