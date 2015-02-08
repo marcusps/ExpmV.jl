@@ -13,7 +13,7 @@ for i = 1:100
     
     rt = randn()
 
-    (x,_,_,_,_,_) = expmv(rt,r,rv)
+    x = expmv(rt,r,rv)
 
     @test_approx_eq_eps norm(x-expm(full(rt*r))*rv,2) 0.0 1e-9
 end
