@@ -1,7 +1,7 @@
 using Benchmark, Expokit, ExpmV
 
-d = 100
-N = 100
+const d = 100
+const N = 100
 
 function setup(d,p)
   r = sprandn(d,d,p)+1im*sprandn(d,d,p);
@@ -15,40 +15,33 @@ function setup(d,p)
   return rt,r,rv,full_r
 end
 
-function expokit_example()
+function expokitf(rt,r,rv,full_r)
   Expokit.expmv(rt,r,rv)
 end
 
-function expmv_example()
+function expmvf(rt,t,rv,full_r)
   ExpmV.expmv(rt,r,rv)
 end
 
-function expm_example()
+function expmf(rt,t,rv,full_r)
   expm(full_r)*rv
 end
 
-rt,r,rv,full_r = setup(d,.01)
+println("Setup ...")
+const rt,r,rv,full_r = setup(d,parsefloat(ARGS[1]))
+
+expmv_example() = expokitf(rt,r,rv,full_r)
+expokit_example() = expmvf(rt,r,rv,full_r)
+expm_example() = expmf(rt,r,rv,full_r)
+
+println("Warming up ...")
 expmv_example()
 expokit_example()
 expm_example()
 
-rt,r,rv,full_r = setup(d,.01)
+println("Benchmarking...")
 println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
-c10=compare([expmv_example, expokit_example, expm_example],N)
-println(c10)
+c=compare([expmv_example, expokit_example, expm_example],N)
+println(c)
 
-rt,r,rv,full_r = setup(d,.1)
-println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
-c20=println(compare([expmv_example, expokit_example, expm_example],N))
-println(c20)
-
-rt,r,rv,full_r = setup(d,.2)
-println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
-c30=println(compare([expmv_example, expokit_example, expm_example],N))
-println(c30)
-
-rt,r,rv,full_r = setup(d,.5)
-println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
-c30=println(compare([expmv_example, expokit_example, expm_example],N))
-println(c30)
 
