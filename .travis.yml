@@ -3,11 +3,14 @@ compiler:
   - clang
 notifications:
   email: false
+env:
+  matrix:
+    # - JULIAVERSION="juliareleases"
+    - JULIAVERSION="julianightlies"
 before_install:
   - sudo add-apt-repository ppa:staticfloat/julia-deps -y
-  - sudo add-apt-repository ppa:staticfloat/julianightlies -y
+  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
   - sudo apt-get update -qq -y
   - sudo apt-get install libpcre3-dev julia -y
 script:
-  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("ExpmV"))`); Pkg.pin("ExpmV"); Pkg.resolve()'
-  - julia -e 'using ExpmV; @assert isdefined(:ExpmV); @assert typeof(ExpmV) === Module'
+  - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("ExpmV")'
