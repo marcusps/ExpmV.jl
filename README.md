@@ -9,6 +9,14 @@ The original code can be found at [Matlabcentral File Exchange](http://www.mathw
 
 *Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators*, Awad H. Al-Mohy and Nicholas J. Higham, SIAM Journal on Scientific Computing 2011 33:2, 488-511. ([preprint](http://eprints.ma.man.ac.uk/1426/))
 
+## Installation
+
+Install into Julia using the package manager:
+
+```julia
+Pkg.clone("git@github.com:marcusps/ExpmV.jl.git", "ExpmV")
+```
+
 ## Usage
 
 ```julia
