@@ -1,3 +1,5 @@
+using Compat
+
 function ht21(A;itmax=20)
     n,m = size(A)
     if n!=m
@@ -31,7 +33,7 @@ function ht22(A,t::Int;itmax=10,debug=false)
     for col=1:t
         scale!(slice(X,1:n,col),1/norm(slice(X,1:n,col),1))
     end
-    I = eye(n)
+    Id = eye(n)
     h = Float64[]
     itcount = itmax
     for k in 1:itmax
@@ -48,7 +50,7 @@ function ht22(A,t::Int;itmax=10,debug=false)
         ind = [1:n;]
         h_ind = sortrows(hcat(h,ind),by=x->x[1],rev=true)
         h   = h_ind[:,1]
-        ind = integer(h_ind[:,2])#round(Int,h_ind[:,2])
+        ind = @compat round(Integer,h_ind[:,2])
         if maximum(h) <= dot(Z[:,ind_best],X[:,ind_best])
             itcount = k
             break
@@ -57,7 +59,7 @@ function ht22(A,t::Int;itmax=10,debug=false)
             println(h[1])
         end
         for j in 1:t
-            X[:,j] = I[:,ind[j]]
+            X[:,j] = Id[:,ind[j]]
         end
     end
     return h[1], itcount
@@ -68,73 +70,102 @@ function ht23(A,t::Int;itmax=2)
     if n!=m
         error("norm 1 estimation can only be applied to square matrices")
     end
-  # start with a random matrix of normalized columns
-  X = randn(size(A,1),t)
-  for col=1:t
-    scale!(slice(X,1:n,col),1/norm(slice(X,1:n,col),1))
-  end
-  est_old = 0 # initial estimate
-  ind = zeros(n,1) 
-  S = zeros(Int8,n,t)  
-  S_old = zeros(n,t)  
-  int_hist = [] #integer vector recording indices of used unit vectors
-  for k=1:itmax+1
-    Y = A*X # TODO: make Y preallocated, and in place multiplication
-    est, est_indx = findmax([norm(slice(X,1:n,col),1) for col in 1:t])
-    if est > est_old || k==2
-      ind_best = est_indx
-      w = Y[:,ind_best]
+    # start with a random matrix of normalized columns
+    X = randn(size(A,1),t)
+    for col=1:t
+        scale!(slice(X,1:n,col),1/norm(slice(X,1:n,col),1))
     end
-    if k>=2 && est <= est_old
-      est = est_old
-      break
-    end
-    est_old = est
-    copy!(S_old,S)
-    if k>itmax
-        break
-    end
-    copy!(S,sign(Y))
-    # TODO: If every column of S is parallel to a column of S_old, break
-    if t>1
-      # TODO:
-      # Ensure that no column of S is parallel to another column of S
-      # or to a column of Sold by replacing columns of S by rand{−1, 1}.
-    end
-    Z = transpose(A)*S
-    h = Float64[norm(Z[i,:],Inf) for i in 1:n]
-    if k>=2 and maximum(h) == h[ind_best]
-        break
-    end
-    # TODO: Sort h in decreasing order, and reorder ind correspondingly
-    if t>1
-        if ind[1:t] in ind_hist
+    Id = eye(n)
+    est_old = 0 # initial old estimate
+    est = 0 # initial estimate
+    ind = zeros(n,1) 
+    S = zeros(Int8,n,t)  
+    S_old = zeros(n,t)  
+    ind_hist = [] # integer vector recording indices of used unit vectors
+    itcount = itmax
+    for k=1:itmax+1
+        Y = A*X # TODO: make Y preallocated, and in place multiplication
+        est, est_indx = findmax([norm(slice(Y,1:n,col),1) for col in 1:t])
+        if est > est_old || k==2
+            ind_best = est_indx
+            w = Y[:,ind_best]
+        end
+        if k>=2 && est <= est_old
+            est = est_old
+            itcount = k
             break
         end
-        # TODO: replace ind[1:t] with the first t indices in
-        #       ind[1:n] that are not in ind_hist
+        est_old = est
+        copy!(S_old,S)
+        if k>itmax
+            break
+        end
+        copy!(S,sign(Y))
+        # If every column of S is parallel to a column of S_old, break
+        if parallel_cols(S,S_old)
+            itcount = k
+            break
+        end
+        if t>1
+            randomize_parallel!(S,S_old)
+        end
+        Z = transpose(A)*S
+        h = Float64[norm(Z[i,:],Inf) for i in 1:n]
+        if k>=2 && maximum(h) == h[ind_best]
+            itcount = k
+            break
+        end
+        # Sort h in decreasing order, and reorder ind correspondingly
+        ind = [1:n;]
+        h_ind = sortrows(hcat(h,ind),by=x->x[1],rev=true)
+        h   = h_ind[:,1]
+        #ind = integer(h_ind[:,2]) 
+        ind = @compat round(Integer,h_ind[:,2])
+        if t>1
+            if ind[1:t] ⊆ ind_hist
+                itcount = k
+                break
+            end
+            # replace ind[1:t] with the first t indices in
+            # ind[1:n] that are not in ind_hist
+            ind[1:t] = filter(x->!(x ⊆ ind_hist),ind)[1:t]
+        end
+        for j in 1:t
+            X[:,j] = Id[:,ind[j]]
+        end
+        ind_hist = [ind_hist; ind[1:t]]
     end
-    for j in 1:t
-        X[:,j] = 
+    return est, itcount
+end
+
+function parallel_cols(S,So)
+    n = size(S,1)
+    # the assumption is that S,So are matrices with elements ±1,
+    # so being parallel would translate to abs value of inner product ≈ n
+    return any(map(x->isapprox(x,n),abs(So'*S)),1) |> all
+end
+
+function randomize_parallel!(S,So)
+    n = size(S,1)
+    # Ensure no column of S is parallel to a column of S
+    ips = map(x->isapprox(x,n),abs(S'*S))
+    for i=1:n
+        ips[i,i] = false
+        if any(ips[:,i])
+            S[:,i] = rand([-1,1],n)
+        end
     end
-    ind_hist = [int_hist; ind[1:t]]
-  end
-  return est,
+    # Ensure no column of S is parallel to a column of So
+    ips = map(x->isapprox(x,n),abs(So'*S))
+    for i=1:n
+        ips[i,i] = false
+        if any(ips[:,i])
+            S[:,i] = rand([-1,1],n)
+        end
+    end
 end
 
 function test(k;d=10)
     A = randn(d,d); 
-    return ht21(A), ht22(A,k), norm(A,1)
-#     res = zeros(k,5)
-#     for i in 1:k
-#         A = randn(d,d)
-#         res[i,1] = norm(A,1)
-#         est21, it21 = ht21(A)
-#         res[i,2] = est21
-#         res[i,3] = it21
-#         est22, it22 = ht22(A,d)
-#         res[i,4] = est22
-#         res[i,5] = it22
-#     end
-#     res
+    return ht21(A), ht22(A,k), ht23(A,k), norm(A,1)
 end
