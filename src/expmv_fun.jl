@@ -1,7 +1,10 @@
 export expmv
 
-function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
-               # bal = false, 
+function expmv(t, A, b; 
+               M = [], 
+               shift = false, 
+               full_term = false, 
+               prnt = false)
 
     #EXPMV   Matrix exponential times vector or matrix.
     #   [F,S,M,MV,MVD] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
@@ -56,12 +59,14 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
         mvd = 0
     end
     
+    T = promote_type(eltype(A),eltype(b),eltype(t))
+
     tol =   
-      if prec == "double"
+      if T == Float64 || T == Complex128
           2.0^(-53)
-      elseif prec == "single"
+      elseif T == Float32 || T == Complex64
           2.0^(-24)
-      elseif prec == "half"   
+      elseif T == Float16 || T == Complex32
           2.0^(-10)
       end
     
