@@ -49,11 +49,9 @@ function select_taylor_degree(A,
     end
     
     if !force_estm && normA <= 4*theta[m_max]*p_max*(p_max + 3)/(m_max*size(b,2));
-        unA = 1;
         c = normA;
         alpha = c*ones(p_max-1,1);
     else
-        unA = 0;
         eta = zeros(p_max,1); 
         alpha = zeros(p_max-1,1);
         for p = 1:p_max
@@ -74,5 +72,5 @@ function select_taylor_degree(A,
         end
     end
     
-    return (M,alpha,unA)
+    return M
 end

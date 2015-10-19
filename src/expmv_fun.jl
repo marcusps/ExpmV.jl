@@ -10,9 +10,7 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #
     #   The full syntax is
     #
-    #     [f,s,m,mv,mvd,unA] = expmv(t,A,b,M,prec,shift,bal,full_term,prnt).
-    #
-    #   unA = 1 if the alpha_p were used instead of norm(A).
+    #     f = expmv(t,A,b,M,prec,shift,bal,full_term,prnt).
     #
     #   If repeated invocation of EXPMV is required for several values of t
     #   or B, it is recommended to provide M as an external parameter as
@@ -38,14 +36,13 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     n = size(A,1)
     
     if shift
-        mu = trace(A)/n 
-        #mu = full(mu) # Much slower without the full!
+        mu = trace(A)/n
         A = A-mu*speye(n)
     end
     
     if isempty(M)
         tt = 1
-        (M,alpha,unA) = select_taylor_degree(t*A,b)
+        M = select_taylor_degree(t * A, b)
     else
         tt = t
     end
