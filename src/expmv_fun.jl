@@ -14,7 +14,7 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #
     #   If repeated invocation of EXPMV is required for several values of t
     #   or B, it is recommended to provide M as an external parameter as
-    #   M = SELECT_TAYLOR_DEGREE(A,m_max,p_max,prec,shift,bal,true).
+    #   M = SELECT_TAYLOR_DEGREE(A,b_columns,m_max,p_max,prec,shift,bal,true).
     #   This also allows choosing different m_max and p_max.
     
     #   Reference: A. H. Al-Mohy and N. J. Higham, Computing the action of
@@ -42,7 +42,7 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     
     if isempty(M)
         tt = 1
-        M = select_taylor_degree(t * A, b)
+        M = select_taylor_degree(t * A, size(b, 2))
     else
         tt = t
     end

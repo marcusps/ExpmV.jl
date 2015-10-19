@@ -1,5 +1,5 @@
 function select_taylor_degree(A,
-                              b;
+                              b_columns;
                               m_max = 55,
                               p_max = 8,
                               prec = "double",
@@ -48,7 +48,7 @@ function select_taylor_degree(A,
         normA = norm(A,1)
     end
     
-    if !force_estm && normA <= 4*theta[m_max]*p_max*(p_max + 3)/(m_max*size(b,2));
+    if !force_estm && normA <= 4*theta[m_max]*p_max*(p_max + 3)/(m_max*b_columns);
         c = normA;
         alpha = c*ones(p_max-1,1);
     else
