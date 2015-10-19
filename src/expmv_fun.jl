@@ -1,6 +1,6 @@
 export expmv
 
-function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
+function expmv(t, A, b; M::Array{Float64, 2} = Array(Float64, 0, 0), prec = "double", shift = false, full_term = false, prnt = false)
                # bal = false, 
 
     #EXPMV   Matrix exponential times vector or matrix.
@@ -41,22 +41,22 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     end
     
     if isempty(M)
-        tt = 1
+        tt = 1.0
         M = select_taylor_degree(t * A, size(b, 2))
     else
         tt = t
     end
     
-    tol =   
-      if prec == "double"
-          2.0^(-53)
+    tol =
+      if prec == "half"
+          2.0^(-10)
       elseif prec == "single"
           2.0^(-24)
-      elseif prec == "half"   
-          2.0^(-10)
+      else
+          2.0^(-53)
       end
     
-    s = 1;
+    s = 1.0;
     
     if t == 0
         m = 0;
@@ -74,15 +74,13 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
             cost,m = findmin(C);  # when C is one column. Happens if p_max = 2.
         end
         if cost == Inf
-            cost = 0 
+            cost = 0.0
         end
-        s = max(cost/m,1);
+        s = max(cost/m,1.0);
     end
     
-    eta = 1;
-    
     if shift 
-        eta = exp(t*mu/s)
+        eta = exp(t * mu / s)
     end
     
     f = b;
@@ -108,7 +106,9 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
             end
             
         end
-        f = eta*f
+        if shift
+            f = eta*f
+        end
         b = f
     end
     
