@@ -1,6 +1,3 @@
-#function  [M,mv,alpha,unA] = ...
-#           select_taylor_degree(A,b,m_max,p_max,prec,shift,bal,force_estm)
-
 function select_taylor_degree(A,
                               b;
                               m_max = 55,
@@ -12,10 +9,9 @@ function select_taylor_degree(A,
 
 
     #SELECT_TAYLOR_DEGREE   Select degree of Taylor approximation.
-    #   [M,MV,alpha,unA] = SELECT_TAYLOR_DEGREE(A,m_max,p_max) forms a matrix M
+    #   [M,alpha,unA] = SELECT_TAYLOR_DEGREE(A,m_max,p_max) forms a matrix M
     #   for use in determining the truncated Taylor series degree in EXPMV
     #   and EXPMV_TSPAN, based on parameters m_max and p_max.
-    #   MV is the number of matrix-vector products with A or A^* computed.
     
     #   Reference: A. H. Al-Mohy and N. J. Higham, Computing the action of
     #   the matrix exponential, with an application to exponential
@@ -48,8 +44,6 @@ function select_taylor_degree(A,
         A = A-mu*speye(n);
     end
     
-    mv = 0;
-    
     if !force_estm
         normA = norm(A,1)
     end
@@ -63,9 +57,8 @@ function select_taylor_degree(A,
         eta = zeros(p_max,1); 
         alpha = zeros(p_max-1,1);
         for p = 1:p_max
-            (c,k) = normAm(A,p+1);
+            c = normAm(A,p+1);
             c = c^(1/(p+1));
-            mv = mv + k;
             eta[p] = c;
         end
         for p = 1:p_max-1
@@ -81,6 +74,5 @@ function select_taylor_degree(A,
         end
     end
     
-    return (M,mv,alpha,unA)
-    
+    return (M,alpha,unA)
 end

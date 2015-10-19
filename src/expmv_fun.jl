@@ -4,12 +4,9 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
                # bal = false, 
 
     #EXPMV   Matrix exponential times vector or matrix.
-    #   [F,S,M,MV,MVD] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
+    #   [F,S,M] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
     #   explicitly forming EXPM(t*A). PREC is the required accuracy, 'double',
     #   'single' or 'half', and defaults to CLASS(A).
-    #
-    #   A total of MV products with A or A^* are used, of which MVD are
-    #   for norm estimation.
     #
     #   The full syntax is
     #
@@ -48,12 +45,9 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     
     if isempty(M)
         tt = 1
-        (M,mvd,alpha,unA) = select_taylor_degree(t*A,b)
-        mv = mvd
+        (M,alpha,unA) = select_taylor_degree(t*A,b)
     else
         tt = t
-        mv = 0
-        mvd = 0
     end
     
     tol =   
@@ -104,7 +98,6 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
         c1 = norm(b,Inf);
         for k = 1:m
             b = (t/(s*k))*(A*b);
-            mv = mv + 1;
             f =  f + b;
             c2 = norm(b,Inf);
             if !full_term
@@ -130,6 +123,5 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #    f = D*f
     #end
     
-    #return (f,s,m,mv,mvd,unA)
     return f
 end

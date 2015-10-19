@@ -56,15 +56,13 @@ function normAm(A,m)
             e = A'*e;
         end
         c = norm(e,Inf);
-        mv = m;
     else
         #(c,_,_,it) = normest1(@afun_power,t);
         #mv = it[2]*t*m;
         c = norm(A^m,1);
-        mv = 6*t*m;
     end
     
-    return (c,mv)
+    return c
     
 end
 
