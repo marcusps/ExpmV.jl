@@ -82,34 +82,37 @@ function expmv(t, A, b; M::Array{Float64, 2} = Array(Float64, 0, 0), prec = "dou
     if shift 
         eta = exp(t * mu / s)
     end
-    
-    f = b;
-    
-    # if prnt 
-    #     fprintf("m = %2.0f, s = %g, m_actual = ", m, s) 
-    # end
-    
-    for i = 1:s
-        c1 = norm(b,Inf);
+
+    f = copy(b)
+    b1 = copy(b)
+    b2 = similar(b)
+    @inbounds for i = 1:s
+        c1 = norm(b1, Inf)
         for k = 1:m
-            b = (t/(s*k))*(A*b);
-            f =  f + b;
-            c2 = norm(b,Inf);
+            A_mul_B!(b2, A, b1)
+            @simd for l in 1:n
+                b2[l] *= (t / (s * k))
+            end
+            (b1, b2) = (b2, b1)
+
+            @simd for l in 1:n
+                f[l] = f[l] + b1[l]
+            end
+            c2 = norm(b1, Inf)
             if !full_term
-                if c1 + c2 <= tol*norm(f,Inf)
+                if c1 + c2 <= tol * norm(f, Inf)
                     # if prnt
                     #     fprintf(" %2.0f, ", k)
                     # end
                     break
                 end
-                c1 = c2;
+                c1 = c2
             end
-            
         end
         if shift
-            f = eta*f
+            scale!(f, eta)
         end
-        b = f
+        copy!(b1, f)
     end
     
     # if prnt
