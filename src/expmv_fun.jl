@@ -1,7 +1,6 @@
 export expmv
 
-function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
-               # bal = false, 
+function expmv(t, A, b; M = [], shift = false, full_term = false, verbose = false, balance = false)
 
     #EXPMV   Matrix exponential times vector or matrix.
     #   [F,S,M,MV,MVD] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
@@ -13,7 +12,7 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #
     #   The full syntax is
     #
-    #     [f,s,m,mv,mvd,unA] = expmv(t,A,b,M,prec,shift,bal,full_term,prnt).
+    #     [f,s,m,mv,mvd,unA] = expmv(t,A,b,M,prec,shift,bal,full_term,verbose).
     #
     #   unA = 1 if the alpha_p were used instead of norm(A).
     #
@@ -28,15 +27,10 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     
     #   Awad H. Al-Mohy and Nicholas J. Higham, October 26, 2010.
     
-    # if bal
-    #     [D,B] = balance(A)
-    #     if norm(B,1) < norm(A,1) 
-    #         A = B
-    #         b = D\b
-    #     else 
-    #         bal = false
-    #     end
-    # end
+    if balance
+        _, _, D = LAPACK.gebal!('B',A)
+        b = D\b
+    end
     
     n = size(A,1)
     
@@ -57,11 +51,11 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     end
     
     tol =   
-      if prec == "double"
+      if eltype(A) == Float64 || eltype(A) == Complex128
           2.0^(-53)
-      elseif prec == "single"
+      elseif eltype(A) == Float32 || eltype(A) == Complex64
           2.0^(-24)
-      elseif prec == "half"   
+      elseif eltype(A) == Float16 || eltype(A) == Complex32
           2.0^(-10)
       end
     
@@ -96,9 +90,9 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     
     f = b;
     
-    # if prnt 
-    #     fprintf("m = %2.0f, s = %g, m_actual = ", m, s) 
-    # end
+    if verbose 
+        fprintf("m = %2.0f, s = %g, m_actual = ", m, s) 
+    end
     
     for i = 1:s
         c1 = norm(b,Inf);
@@ -109,9 +103,9 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
             c2 = norm(b,Inf);
             if !full_term
                 if c1 + c2 <= tol*norm(f,Inf)
-                    # if prnt
-                    #     fprintf(" %2.0f, ", k)
-                    # end
+                    if verbose
+                        fprintf(" %2.0f, ", k)
+                    end
                     break
                 end
                 c1 = c2;
@@ -122,13 +116,13 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
         b = f
     end
     
-    # if prnt
-    #     fprintf("\n")
-    # end
+    if verbose
+        fprintf("\n")
+    end
     
-    #if bal 
-    #    f = D*f
-    #end
+    if balance 
+        f = D*f
+    end
     
     #return (f,s,m,mv,mvd,unA)
     return f
