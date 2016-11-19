@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/marcusps/ExpmV.jl.svg?branch=master)](https://travis-ci.org/marcusps/ExpmV.jl)
 
 This is a Julia translation of the MATLAB implementation of Al-Mohy and Higham's
-function for computing `expm(A)*v` when `A` is sparse, without explicitly computing `expm(A)`.
+function for computing `expm(t*A)*v` when `A` is sparse, without explicitly computing `expm(A)`.
 
 The original code can be found at [Matlabcentral File Exchange](http://www.mathworks.com/matlabcentral/fileexchange/29576-matrix-exponential-times-a-vector/all_files), and the theory is explained in the following article:
 
