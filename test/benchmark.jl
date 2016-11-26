@@ -1,11 +1,15 @@
 using BenchmarkTools, Expokit, ExpmV
 
-const d = 100
+const d = 20
 const p = 0.01
 
-t1 = @benchmark expm(full(randn()*(sprandn(d,d,p/2)+1im*sprandn(d,d,p/2))))*normalize(randn(d)+1im*randn(d))
-t2 = @benchmark Expokit.expmv(randn(),sprandn(d,d,p/2)+1im*sprandn(d,d,p/2),normalize(randn(d)+1im*randn(d)))
-t3 = @benchmark ExpmV.expmv(randn(),sprandn(d,d,p/2)+1im*sprandn(d,d,p/2),normalize(randn(d)+1im*randn(d)))
+b1 = @benchmarkable expm(full_r)*rv setup=((full_r,rv) = (full(randn()*sprandn(d,d,p/2)+1im*sprandn(d,d,p/2)), rv=normalize(randn(d)+1im*randn(d))))
+b2 = @benchmarkable Expokit.expmv(rt,r,rv) setup=((rt,r,rv)=(rand(), sprandn(d,d,p/2)+1im*sprandn(d,d,p/2), normalize(randn(d)+1im*randn(d))))
+b3 = @benchmarkable ExpmV.expmv(rt,r,rv) setup=((rt,r,rv)=(rand(), sprandn(d,d,p/2)+1im*sprandn(d,d,p/2), normalize(randn(d)+1im*randn(d))))
+
+t1 = run(b1)
+t2 = run(b2)
+t3 = run(b3)
 
 println("Full expm")
 println(t1)
