@@ -1,49 +1,11 @@
 using BenchmarkTools, Expokit, ExpmV
 
 const d = 100
-const N = 100
 const p = 0.01
 
-function setup(d,p)
-  r = sprandn(d,d,p)+1im*sprandn(d,d,p);
-
-  rv = randn(d)+1im*randn(d); 
-  rv = rv/norm(rv,2);
-
-  rt = randn();
-
-  full_r = full(rt*r);  
-  return rt,r,rv,full_r
-end
-
-function expokitf(rt,r,rv,full_r)
-  Expokit.expmv(rt,r,rv)
-end
-
-function expmvf(rt,t,rv,full_r)
-  ExpmV.expmv(rt,r,rv)
-end
-
-function expmf(rt,t,rv,full_r)
-  expm(full_r)*rv
-end
-
-println("Setup ...")
-#const rt,r,rv,full_r = setup(d,parse(Float64, ARGS[1]))
-const rt,r,rv,full_r = setup(d,p)
-
-expmv_example() = expmvf(rt,r,rv,full_r)
-expokit_example() = expokitf(rt,r,rv,full_r)
-expm_example() = expmf(rt,r,rv,full_r)
-
-println("Warming up ...")
-expmv_example()
-expokit_example()
-expm_example()
-
-t1 = @benchmark expm_example()
-t2 = @benchmark expokit_example()
-t3 = @benchmark expmv_example()
+t1 = @benchmark expm(full(randn()*(sprandn(d,d,p/2)+1im*sprandn(d,d,p/2))))*normalize(randn(d)+1im*randn(d))
+t2 = @benchmark Expokit.expmv(randn(),sprandn(d,d,p/2)+1im*sprandn(d,d,p/2),normalize(randn(d)+1im*randn(d)))
+t3 = @benchmark ExpmV.expmv(randn(),sprandn(d,d,p/2)+1im*sprandn(d,d,p/2),normalize(randn(d)+1im*randn(d)))
 
 println("Full expm")
 println(t1)
@@ -55,10 +17,10 @@ println("ExpmV")
 println(t3)
 
 println("Full expm vs. Expokit")
-println(judge(median(t1),median(t2)))
+println(judge(median(t2),median(t1)))
 
 println("Full expm vs. ExpmV")
-println(judge(median(t1),median(t3)))
+println(judge(median(t3),median(t1)))
 
 println("Expokit vs. ExpmV")
-println(judge(median(t2),median(t3)))
+println(judge(median(t3),median(t2)))
