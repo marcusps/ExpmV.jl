@@ -28,10 +28,10 @@ function expmf(rt,t,rv,full_r)
 end
 
 println("Setup ...")
-const rt,r,rv,full_r = setup(d,parsefloat(ARGS[1]))
+const rt,r,rv,full_r = setup(d,parse(Float64, ARGS[1]))
 
-expmv_example() = expokitf(rt,r,rv,full_r)
-expokit_example() = expmvf(rt,r,rv,full_r)
+expmv_example() = expmvf(rt,r,rv,full_r)
+expokit_example() = expokitf(rt,r,rv,full_r)
 expm_example() = expmf(rt,r,rv,full_r)
 
 println("Warming up ...")
