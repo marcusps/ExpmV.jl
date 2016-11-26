@@ -1,7 +1,8 @@
-using Benchmark, Expokit, ExpmV
+using BenchmarkTools, Expokit, ExpmV
 
 const d = 100
 const N = 100
+const p = 0.01
 
 function setup(d,p)
   r = sprandn(d,d,p)+1im*sprandn(d,d,p);
@@ -28,7 +29,8 @@ function expmf(rt,t,rv,full_r)
 end
 
 println("Setup ...")
-const rt,r,rv,full_r = setup(d,parse(Float64, ARGS[1]))
+#const rt,r,rv,full_r = setup(d,parse(Float64, ARGS[1]))
+const rt,r,rv,full_r = setup(d,p)
 
 expmv_example() = expmvf(rt,r,rv,full_r)
 expokit_example() = expokitf(rt,r,rv,full_r)
@@ -39,9 +41,24 @@ expmv_example()
 expokit_example()
 expm_example()
 
-println("Benchmarking...")
-println("density of $(nnz(r)/prod(size(r))), dimension $d, $N trials")
-c=compare([expmv_example, expokit_example, expm_example],N)
-println(c)
+t1 = @benchmark expm_example()
+t2 = @benchmark expokit_example()
+t3 = @benchmark expmv_example()
 
+println("Full expm")
+println(t1)
 
+println("Expokit")
+println(t2)
+
+println("ExpmV")
+println(t3)
+
+println("Full expm vs. Expokit")
+println(judge(median(t1),median(t2)))
+
+println("Full expm vs. ExpmV")
+println(judge(median(t1),median(t3)))
+
+println("Expokit vs. ExpmV")
+println(judge(median(t2),median(t3)))
