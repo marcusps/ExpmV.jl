@@ -1,5 +1,7 @@
 using BenchmarkTools, Expokit, ExpmV
 
+BenchmarkTools.DEFAULT_PARAMETERS.seconds = 120
+
 const d = 1_000
 const p = 1e-4
 
@@ -29,4 +31,4 @@ println(judge(median(t3),median(t1)))
 println("Expokit vs. ExpmV")
 println(judge(median(t3),median(t2)))
 
-JLD.save("master-bench.jld","t1",t1,"t2",t2,"t3",t3)
+JLD.save("optimize-bench.jld","t1",t1,"t2",t2,"t3",t3)
