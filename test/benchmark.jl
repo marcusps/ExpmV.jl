@@ -1,5 +1,7 @@
 using BenchmarkTools, Expokit, ExpmV
 
+BenchmarkTools.DEFAULT_PARAMETERS.seconds = 120
+
 const d = 1_000
 const p = 1e-4
 
