@@ -1,25 +1,20 @@
 export expmv
 
-function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
+function expmv(t, A, b; M::Array{Float64, 2} = Array(Float64, 0, 0), prec = "double", shift = false, full_term = false, prnt = false)
                # bal = false, 
 
     #EXPMV   Matrix exponential times vector or matrix.
-    #   [F,S,M,MV,MVD] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
+    #   [F,S,M] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
     #   explicitly forming EXPM(t*A). PREC is the required accuracy, 'double',
     #   'single' or 'half', and defaults to CLASS(A).
     #
-    #   A total of MV products with A or A^* are used, of which MVD are
-    #   for norm estimation.
-    #
     #   The full syntax is
     #
-    #     [f,s,m,mv,mvd,unA] = expmv(t,A,b,M,prec,shift,bal,full_term,prnt).
-    #
-    #   unA = 1 if the alpha_p were used instead of norm(A).
+    #     f = expmv(t,A,b,M,prec,shift,bal,full_term,prnt).
     #
     #   If repeated invocation of EXPMV is required for several values of t
     #   or B, it is recommended to provide M as an external parameter as
-    #   M = SELECT_TAYLOR_DEGREE(A,m_max,p_max,prec,shift,bal,true).
+    #   M = SELECT_TAYLOR_DEGREE(A,b_columns,m_max,p_max,prec,shift,bal,true).
     #   This also allows choosing different m_max and p_max.
     
     #   Reference: A. H. Al-Mohy and N. J. Higham, Computing the action of
@@ -41,31 +36,27 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     n = size(A,1)
     
     if shift
-        mu = trace(A)/n 
-        #mu = full(mu) # Much slower without the full!
+        mu = trace(A)/n
         A = A-mu*speye(n)
     end
     
     if isempty(M)
-        tt = 1
-        (M,mvd,alpha,unA) = select_taylor_degree(t*A,b)
-        mv = mvd
+        tt = 1.0
+        M = select_taylor_degree(t * A, size(b, 2))
     else
         tt = t
-        mv = 0
-        mvd = 0
     end
     
-    tol =   
-      if prec == "double"
-          2.0^(-53)
+    tol =
+      if prec == "half"
+          2.0^(-10)
       elseif prec == "single"
           2.0^(-24)
-      elseif prec == "half"   
-          2.0^(-10)
+      else
+          2.0^(-53)
       end
     
-    s = 1;
+    s = 1.0;
     
     if t == 0
         m = 0;
@@ -83,43 +74,45 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
             cost,m = findmin(C);  # when C is one column. Happens if p_max = 2.
         end
         if cost == Inf
-            cost = 0 
+            cost = 0.0
         end
-        s = max(cost/m,1);
+        s = max(cost/m,1.0);
     end
-    
-    eta = 1;
     
     if shift 
-        eta = exp(t*mu/s)
+        eta = exp(t * mu / s)
     end
-    
-    f = b;
-    
-    # if prnt 
-    #     fprintf("m = %2.0f, s = %g, m_actual = ", m, s) 
-    # end
-    
-    for i = 1:s
-        c1 = norm(b,Inf);
+
+    f = copy(b)
+    b1 = copy(b)
+    b2 = similar(b)
+    @inbounds for i = 1:s
+        c1 = norm(b1, Inf)
         for k = 1:m
-            b = (t/(s*k))*(A*b);
-            mv = mv + 1;
-            f =  f + b;
-            c2 = norm(b,Inf);
+            A_mul_B!(b2, A, b1)
+            @simd for l in 1:n
+                b2[l] *= (t / (s * k))
+            end
+            (b1, b2) = (b2, b1)
+
+            @simd for l in 1:n
+                f[l] = f[l] + b1[l]
+            end
+            c2 = norm(b1, Inf)
             if !full_term
-                if c1 + c2 <= tol*norm(f,Inf)
+                if c1 + c2 <= tol * norm(f, Inf)
                     # if prnt
                     #     fprintf(" %2.0f, ", k)
                     # end
                     break
                 end
-                c1 = c2;
+                c1 = c2
             end
-            
         end
-        f = eta*f
-        b = f
+        if shift
+            scale!(f, eta)
+        end
+        copy!(b1, f)
     end
     
     # if prnt
@@ -130,6 +123,5 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #    f = D*f
     #end
     
-    #return (f,s,m,mv,mvd,unA)
     return f
 end
