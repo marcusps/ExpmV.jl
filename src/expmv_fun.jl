@@ -1,6 +1,10 @@
 export expmv
 
-function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
+function expmv(t::Number, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
+  return expmvi(t, A, b, M = [], prec=prec, shift=shift, full_term=full_term, prnt=prnt)[1]
+end
+
+function expmvi(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
                # bal = false,
 
     #EXPMV   Matrix exponential times vector or matrix.
@@ -38,7 +42,7 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #     end
     # end
 
-    n = size(A,1)
+    n = size(A, 1)
 
     if shift
         mu = trace(A)/n
@@ -131,5 +135,5 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #end
 
     #return (f,s,m,mv,mvd,unA)
-    return f
+    return (f, mv)
 end
