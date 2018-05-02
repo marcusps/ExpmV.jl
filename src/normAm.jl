@@ -50,7 +50,7 @@ function normAm(A,m)
     # end
 
 
-    if isequal(A,abs.(A))
+    if isequal(A, abs.(A))
         e = ones(n,1);
         for j=1:m         # for positive matrices only
             e = A'*e;
