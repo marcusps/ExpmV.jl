@@ -55,51 +55,51 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
         mv = 0
         mvd = 0
     end
-    
-    tol =   
+
+    tol =
       if prec == "double"
           2.0^(-53)
       elseif prec == "single"
           2.0^(-24)
-      elseif prec == "half"   
+      elseif prec == "half"
           2.0^(-10)
       end
-    
+
     s = 1;
-    
+
     if t == 0
         m = 0;
     else
         (m_max,p) = size(M);
         U = diagm(1:m_max);
-        C = ( (ceil(abs(tt)*M))'*U );
+        C = ( (ceil.(abs.(tt)*M))'*U );
         zero_els = find(x->x==0, C)
         for el in zero_els
             C[el] = Inf
         end
-        if p > 1 
+        if p > 1
             cost,m = findmin(minimum(C,1)); # cost is the overall cost.
         else
             cost,m = findmin(C);  # when C is one column. Happens if p_max = 2.
         end
         if cost == Inf
-            cost = 0 
+            cost = 0
         end
         s = max(cost/m,1);
     end
-    
+
     eta = 1;
-    
-    if shift 
+
+    if shift
         eta = exp(t*mu/s)
     end
-    
+
     f = b;
-    
-    # if prnt 
-    #     fprintf("m = %2.0f, s = %g, m_actual = ", m, s) 
+
+    # if prnt
+    #     fprintf("m = %2.0f, s = %g, m_actual = ", m, s)
     # end
-    
+
     for i = 1:s
         c1 = norm(b,Inf);
         for k = 1:m
