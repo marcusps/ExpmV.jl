@@ -1,7 +1,7 @@
 export expmv
 
 function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
-               # bal = false, 
+               # bal = false,
 
     #EXPMV   Matrix exponential times vector or matrix.
     #   [F,S,M,MV,MVD] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
@@ -21,31 +21,31 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
     #   or B, it is recommended to provide M as an external parameter as
     #   M = SELECT_TAYLOR_DEGREE(A,m_max,p_max,prec,shift,bal,true).
     #   This also allows choosing different m_max and p_max.
-    
+
     #   Reference: A. H. Al-Mohy and N. J. Higham, Computing the action of
     #   the matrix exponential, with an application to exponential
     #   integrators. MIMS EPrint 2010.30, The University of Manchester, 2010.
-    
+
     #   Awad H. Al-Mohy and Nicholas J. Higham, October 26, 2010.
-    
+
     # if bal
     #     [D,B] = balance(A)
-    #     if norm(B,1) < norm(A,1) 
+    #     if norm(B,1) < norm(A,1)
     #         A = B
     #         b = D\b
-    #     else 
+    #     else
     #         bal = false
     #     end
     # end
-    
+
     n = size(A,1)
-    
+
     if shift
-        mu = trace(A)/n 
+        mu = trace(A)/n
         #mu = full(mu) # Much slower without the full!
         A = A-mu*speye(n)
     end
-    
+
     if isempty(M)
         tt = 1
         (M,mvd,alpha,unA) = select_taylor_degree(t*A,b)
@@ -116,20 +116,20 @@ function expmv(t, A, b; M = [], prec = "double", shift = false, full_term = fals
                 end
                 c1 = c2;
             end
-            
+
         end
         f = eta*f
         b = f
     end
-    
+
     # if prnt
     #     fprintf("\n")
     # end
-    
-    #if bal 
+
+    #if bal
     #    f = D*f
     #end
-    
+
     #return (f,s,m,mv,mvd,unA)
     return f
 end
