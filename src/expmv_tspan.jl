@@ -44,24 +44,28 @@ function expmv(t::StepRangeLen, A, b; M = [], prec = "double", shift = true, ful
     z = X[:,1]
     m_opt, = degree_selector(d, M, U, p)
     dr = d
+    K = zeros(eltype(A), n, m_opt+1)
+
+    temp = similar(b)
+    f = similar(b)
+
     for i = 1:j+1
         if i > j
             dr = r
         end
-        K = zeros(eltype(A), n, m_opt+1)
         K[:,1] = z
         m = 0
         for k = 1:dr
-            f = z
+            f = copy(z)
             c1 = norm(z, Inf)
 
             for p = 1:m_opt
                 if p > m
-                    K[:,p+1] = (h/p)*(A*K[:,p])
+                    @views K[:,p+1] .= (h/p).*(A*K[:,p])
                 end
 
-                temp = (Float64(k)^p)*K[:,p+1]
-                f += temp
+                @views temp .= (Float64(k)^p).*K[:,p+1]
+                f .+= temp
                 c2 = norm(temp, Inf)
                 if c1 + c2 <= tol * norm(f, Inf)
                     break
@@ -69,7 +73,7 @@ function expmv(t::StepRangeLen, A, b; M = [], prec = "double", shift = true, ful
                 c1 = c2
             end
             m = max(m,p)
-            X[:, k + (i - 1) * d + 1] = exp(k * h * mu) * f
+            @views X[:, k + (i - 1) * d + 1] .= exp(k * h * mu) * f
         end
 
         if i <= j
