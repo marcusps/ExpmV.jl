@@ -1,24 +1,26 @@
-function expmv(t::StepRangeLen, A, b; M = [], prec = "double", shift = true, full_term = false, prnt = false)
+function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
+                M = nothing, precision = "double", shift = true)
+
     t0 = Float64(t.ref)
     tmax = Float64(t.ref + (t.len - 1.) * t.step)
     q = t.len - 1
     n = size(A, 1)
 
     force_estm = false; temp = (tmax -t0)*norm(A, 1);
-    if (prec == "single" || prec == "half" && temp > 85.496) || ( prec == "double" && temp > 63.152)
+    if (precision == "single" || precision == "half" && temp > 85.496) || ( precision == "double" && temp > 63.152)
        force_estm = true;
     end
 
-    if isempty(M)
-        (M, alpha, unA) = select_taylor_degree(A, b, prec=prec, shift=shift, force_estm=force_estm)
+    if M == nothing
+        (M, alpha, unA) = select_taylor_degree(A, b, precision=precision, shift=shift, force_estm=force_estm)
     end
 
     tol =
-      if prec == "double"
+      if precision == "double"
           2.0^(-53)
-      elseif prec == "single"
+      elseif precision == "single"
           2.0^(-24)
-      elseif prec == "half"
+      elseif precision == "half"
           2.0^(-10)
       end
 
@@ -29,12 +31,11 @@ function expmv(t::StepRangeLen, A, b; M = [], prec = "double", shift = true, ful
     temp, s = degree_selector(tmax - t0, M, U, p)
     h = (tmax - t0)/q;
 
-    X[:,1] = expmv(t0,A,b,M=M,prec=prec,shift=shift,prnt=prnt);
+    X[:,1] = expmv(t0,A,b,M=M,precision=precision,shift=shift);
 
     mu = 0.
     if shift
         mu = trace(A)/n
-        #mu = full(mu) # Much slower without the full!
         A = A-mu*speye(n)
     end
 

@@ -1,31 +1,45 @@
 export expmv
 
-function expmv(t::Number, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
+"""
+    expmv(t, A, b; <keyword arguments>)
 
+Returns the matrix-vector product ``exp(t A) b`` where `A` is a ``n × n`` sparse
+real or complex matrix, `b` is a vector of ``n`` real or complex elements and `t` is
+a parameter (or a `StepRangeLen` object representing a range of values).
+
+# Arguments
+* `t`: `Number` or `StepRangeLen` object
+* `A`: a `n × n` real or complex sparse matrix
+* `b`: an `n`-vector
+* `M = []`: manually set the degree of the Taylor expansion
+* `precision = "double"`: can be `"double"`, `"single"` or `"half"`.
+* `shift = false`: set to `true` to apply a shift in order to reduce the norm of A
+        (see Sec. 3.1 of the paper)
+* `full_term = false`: set to `true` to evaluate the full Taylor expansion instead
+        of truncating when reaching the required precision
+"""
+function expmv(t::Number, A::SparseMatrixCSC, b::Vector; M = nothing,
+                precision = "double", shift = false, full_term = false)
     n = size(A, 1)
 
     if shift
         mu = trace(A)/n
-        #mu = full(mu) # Much slower without the full!
         A = A-mu*speye(n)
     end
 
-    if isempty(M)
+    if M == nothing
         tt = 1
         (M,alpha,unA) = select_taylor_degree(t*A,b)
-
     else
         tt = t
-
-        mvd = 0
     end
 
     tol =
-      if prec == "double"
+      if precision == "double"
           2.0^(-53)
-      elseif prec == "single"
+      elseif precision == "single"
           2.0^(-24)
-      elseif prec == "half"
+      elseif precision == "half"
           2.0^(-10)
       end
 
@@ -60,10 +74,6 @@ function expmv(t::Number, A, b; M = [], prec = "double", shift = false, full_ter
 
     f = b;
 
-    # if prnt
-    #     fprintf("m = %2.0f, s = %g, m_actual = ", m, s)
-    # end
-
     for i = 1:s
         c1 = norm(b,Inf);
         for k = 1:m
@@ -72,9 +82,6 @@ function expmv(t::Number, A, b; M = [], prec = "double", shift = false, full_ter
             c2 = norm(b,Inf);
             if !full_term
                 if c1 + c2 <= tol*norm(f,Inf)
-                    # if prnt
-                    #     fprintf(" %2.0f, ", k)
-                    # end
                     break
                 end
                 c1 = c2;
