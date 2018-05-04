@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/matteoacrossi/ExpmV.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/ExpmV.jl)
 
-> This is a fork from [https://github.com/marcusps/ExpmV.jl]
+> This is a fork from https://github.com/marcusps/ExpmV.jl, implementing the evaluation for multiple values of the parameter ` t`.
 
 This is a Julia translation of the MATLAB implementation of Al-Mohy and Higham's
 function for computing `expm(t*A)*v` when `A` is sparse, without explicitly computing `expm(A)`.
