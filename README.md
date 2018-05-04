@@ -1,9 +1,13 @@
 # ExpmV
 
-[![Build Status](https://travis-ci.org/marcusps/ExpmV.jl.svg?branch=master)](https://travis-ci.org/marcusps/ExpmV.jl)
+[![Build Status](https://travis-ci.org/matteoacrossi/ExpmV.jl.svg?branch=master)](https://travis-ci.org/matteoacrossi/ExpmV.jl)
+
+> This is a fork from [https://github.com/marcusps/ExpmV.jl]
 
 This is a Julia translation of the MATLAB implementation of Al-Mohy and Higham's
 function for computing `expm(t*A)*v` when `A` is sparse, without explicitly computing `expm(A)`.
+
+If `t` is a `StepRangeLen` object (i. e. a `linspace`), use an optimized algorithm to output the result for all `t`.
 
 The original code can be found at [Matlabcentral File Exchange](http://www.mathworks.com/matlabcentral/fileexchange/29576-matrix-exponential-times-a-vector/all_files), and the theory is explained in the following article:
 
@@ -14,14 +18,16 @@ The original code can be found at [Matlabcentral File Exchange](http://www.mathw
 Install into Julia using the package manager:
 
 ```julia
-Pkg.clone("git@github.com:marcusps/ExpmV.jl.git", "ExpmV")
+Pkg.clone("git@github.com:matteoacrossi/ExpmV.jl.git", "ExpmV")
 ```
 
 ## Usage
 
 ```julia
-expmv(t,A,v)
+expmv(t, A, v)
 ```
+
+Eg. `t = 1.`, or `t = linspace(0, 1, 100)`.
 
 ## Benchmarks
 
@@ -56,4 +62,3 @@ Clearly the current `ExpmV.jl` implementation needs to be looked at more careful
 ## License
 
 Released under the [BSD 2-clause license](https://tldrlegal.com/license/bsd-2-clause-license-(freebsd)) used in Al-Mohy and  Higham's original code.
-
