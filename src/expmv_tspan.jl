@@ -22,7 +22,7 @@ function expmv(t::StepRangeLen, A, b; M = [], prec = "double", shift = true, ful
           2.0^(-10)
       end
 
-    X = zeros(n, q+1);
+    X = zeros(eltype(A), n, q+1);
     (m_max, p) = size(M);
     U = diagm(1:m_max);
 
@@ -48,7 +48,7 @@ function expmv(t::StepRangeLen, A, b; M = [], prec = "double", shift = true, ful
         if i > j
             dr = r
         end
-        K = zeros(n, m_opt+1)
+        K = zeros(eltype(A), n, m_opt+1)
         K[:,1] = z
         m = 0
         for k = 1:dr
