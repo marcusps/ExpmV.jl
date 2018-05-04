@@ -1,46 +1,6 @@
 export expmv
 
 function expmv(t::Number, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
-  return expmvi(t, A, b, M = [], prec=prec, shift=shift, full_term=full_term, prnt=prnt)[1]
-end
-
-function expmvi(t, A, b; M = [], prec = "double", shift = false, full_term = false, prnt = false)
-               # bal = false,
-
-    #EXPMV   Matrix exponential times vector or matrix.
-    #   [F,S,M,MV,MVD] = EXPMV(t,A,B,[],PREC) computes EXPM(t*A)*B without
-    #   explicitly forming EXPM(t*A). PREC is the required accuracy, 'double',
-    #   'single' or 'half', and defaults to CLASS(A).
-    #
-    #   A total of MV products with A or A^* are used, of which MVD are
-    #   for norm estimation.
-    #
-    #   The full syntax is
-    #
-    #     [f,s,m,mv,mvd,unA] = expmv(t,A,b,M,prec,shift,bal,full_term,prnt).
-    #
-    #   unA = 1 if the alpha_p were used instead of norm(A).
-    #
-    #   If repeated invocation of EXPMV is required for several values of t
-    #   or B, it is recommended to provide M as an external parameter as
-    #   M = SELECT_TAYLOR_DEGREE(A,m_max,p_max,prec,shift,bal,true).
-    #   This also allows choosing different m_max and p_max.
-
-    #   Reference: A. H. Al-Mohy and N. J. Higham, Computing the action of
-    #   the matrix exponential, with an application to exponential
-    #   integrators. MIMS EPrint 2010.30, The University of Manchester, 2010.
-
-    #   Awad H. Al-Mohy and Nicholas J. Higham, October 26, 2010.
-
-    # if bal
-    #     [D,B] = balance(A)
-    #     if norm(B,1) < norm(A,1)
-    #         A = B
-    #         b = D\b
-    #     else
-    #         bal = false
-    #     end
-    # end
 
     n = size(A, 1)
 
@@ -52,11 +12,11 @@ function expmvi(t, A, b; M = [], prec = "double", shift = false, full_term = fal
 
     if isempty(M)
         tt = 1
-        (M,mvd,alpha,unA) = select_taylor_degree(t*A,b)
-        mv = mvd
+        (M,alpha,unA) = select_taylor_degree(t*A,b)
+
     else
         tt = t
-        mv = 0
+
         mvd = 0
     end
 
@@ -108,7 +68,6 @@ function expmvi(t, A, b; M = [], prec = "double", shift = false, full_term = fal
         c1 = norm(b,Inf);
         for k = 1:m
             b = (t/(s*k))*(A*b);
-            mv = mv + 1;
             f =  f + b;
             c2 = norm(b,Inf);
             if !full_term
@@ -126,14 +85,5 @@ function expmvi(t, A, b; M = [], prec = "double", shift = false, full_term = fal
         b = f
     end
 
-    # if prnt
-    #     fprintf("\n")
-    # end
-
-    #if bal
-    #    f = D*f
-    #end
-
-    #return (f,s,m,mv,mvd,unA)
-    return (f, mv)
+    return f
 end
