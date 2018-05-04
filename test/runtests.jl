@@ -1,7 +1,7 @@
 using ExpmV
 using Base.Test
 
-for i = 1:100, d in 10:10:60, herm in [true, false]
+for i = 1:20, d in 10:10:60, herm in [true, false]
     r = sprandn(d,d,.1)+1im*sprandn(d,d,.1)
     if herm
         r = (r-r')/2
