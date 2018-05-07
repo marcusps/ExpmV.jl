@@ -39,7 +39,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
         A = A-mu*speye(n)
     end
 
-    d = Int(floor(q/s))
+    d = max(1, Int(floor(q/s)))
     j = Int(floor(q/d))
     r = q - d * j
     z = X[:,1]
