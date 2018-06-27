@@ -39,7 +39,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
     mu = 0.
     if shift
         mu = tr(A)/n
-        A = A - mu * I 
+        A = A - mu * I
     end
 
     d = max(1, Int(floor(q/s)))
@@ -63,7 +63,8 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
             f = copy(z)
             c1 = norm(z, Inf)
 
-            for p = 1:m_opt
+            p = 1
+            for outer p = 1:m_opt
                 if p > m
                     @views K[:,p+1] .= (h/p).*(A*K[:,p])
                 end
@@ -76,6 +77,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
                 end
                 c1 = c2
             end
+
             m = max(m,p)
             @views X[:, k + (i - 1) * d + 1] .= exp(k * h * mu) * f
         end
