@@ -21,7 +21,7 @@ Install into Julia using the package manager:
 Pkg.clone("git@github.com:matteoacrossi/ExpmV.jl.git", "ExpmV")
 ```
 
-## Usage
+ ## Usage
 
 ```julia
 expmv(t, A, v)
