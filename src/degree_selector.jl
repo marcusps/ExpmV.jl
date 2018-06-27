@@ -1,10 +1,14 @@
-using SparseArrays
-using LinearAlgebra
+if VERSION < v"0.7-"
+    nothing
+else
+    using LinearAlgebra
+    using SparseArrays
+end
 
 function degree_selector(t, M, U, p)
     C = ceil.(abs.(t)*M)'*U
     C = zero_to_inf.(C)
-    
+
     # idx is a CarthesianIndex if C' is a Matrix, or a scalar if C' is a row
     # vector. idx[1] extract the first index, i.e. row, of the CarthesianIndex
     cost, idx = findmin(C')
