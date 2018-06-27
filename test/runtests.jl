@@ -27,11 +27,7 @@ end
             end
             # Test the StepRangeLen version against the normal version
             @testset "Timespan $nt timesteps" for nt in [5 11 51]
-                if VERSION < v"0.7-"
-                    t = linspace(0, rt, nt)
-                else
-                    t = range(0, stop=rt, length=nt)
-                end
+                t = range(0, stop=rt, length=nt)
                 x = expmv(t,r,rv)
                 y = hcat([expmv(ti,r,rv) for ti in t]...)
                 @test x ≈ y atol=1.0e-10
