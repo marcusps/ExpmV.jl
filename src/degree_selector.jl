@@ -4,11 +4,12 @@ using LinearAlgebra
 function degree_selector(t, M, U, p)
     C = ceil.(abs.(t)*M)'*U
     C = zero_to_inf.(C)
-    if p > 1
-        cost, m = findmin(minimum(C,dim=1)); # cost is the overall cost.
-    else
-        cost, m = findmin(C);  # when C is one column. Happens if p_max = 2.
-    end
+    
+    # idx is a CarthesianIndex if C' is a Matrix, or a scalar if C' is a row
+    # vector. idx[1] extract the first index, i.e. row, of the CarthesianIndex
+    cost, idx = findmin(C')
+    m = idx[1]
+
     if cost == Inf
         cost = 0
     end

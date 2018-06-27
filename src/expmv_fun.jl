@@ -55,17 +55,20 @@ function expmv(t::Number, A::SparseMatrixCSC, b::Vector; M = nothing,
         U = diagm(0 => 1:m_max);
         C = ( (ceil.(abs.(tt)*M))'*U );
         zero_els = find(x->x==0, C)
+
         for el in zero_els
             C[el] = Inf
         end
-        if p > 1
-            cost,m = findmin(minimum(C,dim=1)); # cost is the overall cost.
-        else
-            cost,m = findmin(C);  # when C is one column. Happens if p_max = 2.
-        end
+
+        cost, idx = findmin(C')
+        # idx is a CarthesianIndex if C' is a Matrix, or a scalar if C' is a row
+        # vector. idx[1] extract the first index, i.e. row, of the CarthesianIndex
+        m = idx[1]
+
         if cost == Inf
             cost = 0
         end
+
         s = max(cost/m,1);
     end
 
