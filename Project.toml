@@ -1,6 +1,8 @@
-authors = ["Matteo Rossi <teo.red90@gmail.com>"]
 name = "ExpmV"
-uuid = "0e2dd3ee-79f8-11e8-396a-270a971e107e"
-version = "0.0.4"
+uuid = "e7fedf88-7a0b-11e8-3562-f39b41888c88"
+authors = ["Matteo Rossi <teo.red90@gmail.com>"]
+version = "0.1.0"
 
 [deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
