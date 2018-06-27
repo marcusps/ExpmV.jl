@@ -18,11 +18,11 @@ using SparseArrays
 
             x = expmv(rt,r,rv)
             @testset "Against expm" begin
-                @test norm(x-exp(full(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
+                @test norm(x-exp(Matrix(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
             end
             # Test the StepRangeLen version against the normal version
             @testset "Timespan $nt timesteps" for nt in [5 11 51]
-                t = linspace(0, rt, nt)
+                t = range(0, stop=rt, length=nt)
                 x = expmv(t,r,rv)
                 y = hcat([expmv(ti,r,rv) for ti in t]...)
                 @test x ≈ y atol=1.0e-10

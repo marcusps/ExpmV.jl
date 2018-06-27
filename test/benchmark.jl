@@ -7,7 +7,7 @@ const p = 1e-3
 bench = Dict{String,Any}[]
 for d in 2.^(5:10)
     println("d = $d ...")
-    b1 = @benchmarkable expm(full_r)*rv setup=((full_r,rv) = (full(randn()*sprandn($d,$d,p/2)+1im*sprandn($d,$d,p/2)), rv=normalize(randn($d)+1im*randn($d))))
+    b1 = @benchmarkable expm(full_r)*rv setup=((full_r,rv) = (Matrix(randn()*sprandn($d,$d,p/2)+1im*sprandn($d,$d,p/2)), rv=normalize(randn($d)+1im*randn($d))))
     b2 = @benchmarkable Expokit.expmv(rt,r,rv) setup=((rt,r,rv)=(rand(), sprandn($d,$d,p/2)+1im*sprandn($d,$d,p/2), normalize(randn($d)+1im*randn($d))))
     b3 = @benchmarkable ExpmV.expmv(rt,r,rv) setup=((rt,r,rv)=(rand(), sprandn($d,$d,p/2)+1im*sprandn($d,$d,p/2), normalize(randn($d)+1im*randn($d))))
 
