@@ -1,3 +1,6 @@
+using SparseArrays
+using LinearAlgebra
+
 export expmv
 
 """
@@ -23,7 +26,7 @@ function expmv(t::Number, A::SparseMatrixCSC, b::Vector; M = nothing,
     n = size(A, 1)
 
     if shift
-        mu = trace(A)/n
+        mu = tr(A)/n
         A = A-mu*speye(n)
     end
 
@@ -49,14 +52,14 @@ function expmv(t::Number, A::SparseMatrixCSC, b::Vector; M = nothing,
         m = 0;
     else
         (m_max,p) = size(M);
-        U = diagm(1:m_max);
+        U = diagm(0 => 1:m_max);
         C = ( (ceil.(abs.(tt)*M))'*U );
         zero_els = find(x->x==0, C)
         for el in zero_els
             C[el] = Inf
         end
         if p > 1
-            cost,m = findmin(minimum(C,1)); # cost is the overall cost.
+            cost,m = findmin(minimum(C,dim=1)); # cost is the overall cost.
         else
             cost,m = findmin(C);  # when C is one column. Happens if p_max = 2.
         end

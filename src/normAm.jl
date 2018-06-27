@@ -1,3 +1,6 @@
+using SparseArrays
+using LinearAlgebra
+
 function normAm(A,m)
     #NORMAM   Estimate of 1-norm of power of matrix.
     #   NORMAM(A,m) estimates norm(A^m,1).

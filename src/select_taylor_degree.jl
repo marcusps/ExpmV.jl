@@ -1,3 +1,6 @@
+using SparseArrays
+using LinearAlgebra
+
 #function  [M,mv,alpha,unA] = ...
 #           select_taylor_degree(A,b,m_max,p_max,precision,shift,bal,force_estm)
 
@@ -71,7 +74,7 @@ function select_taylor_degree(A,
       end
 
     if shift
-        mu = trace(A)/n;
+        mu = tr(A)/n;
         A = A-mu*speye(n);
     end
 

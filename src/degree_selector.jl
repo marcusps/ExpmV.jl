@@ -1,8 +1,11 @@
+using SparseArrays
+using LinearAlgebra
+
 function degree_selector(t, M, U, p)
     C = ceil.(abs.(t)*M)'*U
     C = zero_to_inf.(C)
     if p > 1
-        cost, m = findmin(minimum(C,1)); # cost is the overall cost.
+        cost, m = findmin(minimum(C,dim=1)); # cost is the overall cost.
     else
         cost, m = findmin(C);  # when C is one column. Happens if p_max = 2.
     end

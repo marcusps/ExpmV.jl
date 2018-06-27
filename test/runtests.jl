@@ -1,5 +1,7 @@
 using ExpmV
-using Base.Test
+using Test
+using LinearAlgebra
+using SparseArrays
 
 @testset "Hermitian: $herm"  for herm in [true, false]
     @testset "Size: $d" for d in 10:10:60

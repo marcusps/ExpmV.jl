@@ -1,3 +1,6 @@
+using SparseArrays
+using LinearAlgebra
+
 function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
                 M = nothing, precision = "double", shift = true)
 
@@ -26,7 +29,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
 
     X = zeros(eltype(A), n, q+1);
     (m_max, p) = size(M);
-    U = diagm(1:m_max);
+    U = diagm(0 => 1:m_max);
 
     temp, s = degree_selector(tmax - t0, M, U, p)
     h = (tmax - t0)/q;
@@ -35,7 +38,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
 
     mu = 0.
     if shift
-        mu = trace(A)/n
+        mu = tr(A)/n
         A = A-mu*speye(n)
     end
 
