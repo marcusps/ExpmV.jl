@@ -33,7 +33,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
 
     X = zeros(eltype(A), n, q+1);
     (m_max, p) = size(M);
-    U = diagm(0 => 1:m_max);
+    U = Matrix(Diagonal(1:m_max))
 
     temp, s = degree_selector(tmax - t0, M, U, p)
     h = (tmax - t0)/q;
