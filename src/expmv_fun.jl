@@ -56,7 +56,7 @@ function expmv(t::Number, A::SparseMatrixCSC, b::Vector; M = nothing,
         m = 0;
     else
         (m_max,p) = size(M);
-        U = Matrix(Diagonal(1:m_max));
+        U = diagm(0 => 1:m_max);
         C = ((ceil.(abs.(tt)*M))'*U );
 
         C[C .== 0] .= Inf
