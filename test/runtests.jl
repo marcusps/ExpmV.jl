@@ -1,7 +1,12 @@
 using ExpmV
-using Test
-using LinearAlgebra
-using SparseArrays
+
+if VERSION < v"0.7-"
+    using Base.Test
+else
+    using Test
+    using LinearAlgebra
+    using SparseArrays
+end
 
 @testset "Hermitian: $herm"  for herm in [true, false]
     @testset "Size: $d" for d in 10:10:60

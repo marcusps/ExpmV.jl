@@ -1,5 +1,9 @@
-using SparseArrays
-using LinearAlgebra
+if VERSION < v"0.7-"
+    nothing
+else
+    using LinearAlgebra
+    using SparseArrays
+end
 
 #function  [M,mv,alpha,unA] = ...
 #           select_taylor_degree(A,b,m_max,p_max,precision,shift,bal,force_estm)
