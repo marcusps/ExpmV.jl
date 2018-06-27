@@ -1,5 +1,9 @@
-using SparseArrays
-using LinearAlgebra
+if VERSION < v"0.7-"
+    nothing
+else
+    using LinearAlgebra
+    using SparseArrays
+end
 
 function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
                 M = nothing, precision = "double", shift = true)

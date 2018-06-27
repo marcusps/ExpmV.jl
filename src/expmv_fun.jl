@@ -1,5 +1,9 @@
-using SparseArrays
-using LinearAlgebra
+if VERSION < v"0.7-"
+    nothing
+else
+    using LinearAlgebra
+    using SparseArrays
+end
 
 export expmv
 
