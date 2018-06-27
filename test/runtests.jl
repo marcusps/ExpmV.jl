@@ -18,7 +18,7 @@ using SparseArrays
 
             x = expmv(rt,r,rv)
             @testset "Against expm" begin
-                @test norm(x-expm(full(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
+                @test norm(x-exp(full(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
             end
             # Test the StepRangeLen version against the normal version
             @testset "Timespan $nt timesteps" for nt in [5 11 51]
