@@ -23,8 +23,8 @@ using SparseArrays
             # Test the StepRangeLen version against the normal version
             @testset "Timespan $nt timesteps" for nt in [5 11 51]
                 t = linspace(0, rt, nt)
-                @time x = expmv(t,r,rv)
-                @time y = hcat([expmv(ti,r,rv) for ti in t]...)
+                x = expmv(t,r,rv)
+                y = hcat([expmv(ti,r,rv) for ti in t]...)
                 @test x ≈ y atol=1.0e-10
             end
         end
