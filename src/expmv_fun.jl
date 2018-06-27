@@ -27,7 +27,7 @@ function expmv(t::Number, A::SparseMatrixCSC, b::Vector; M = nothing,
 
     if shift
         mu = tr(A)/n
-        A = A-mu*speye(n)
+        A = A - mu*I
     end
 
     if M == nothing

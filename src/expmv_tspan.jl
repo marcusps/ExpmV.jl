@@ -39,7 +39,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
     mu = 0.
     if shift
         mu = tr(A)/n
-        A = A-mu*speye(n)
+        A = A - mu * I 
     end
 
     d = max(1, Int(floor(q/s)))

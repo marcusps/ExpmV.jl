@@ -75,7 +75,7 @@ function select_taylor_degree(A,
 
     if shift
         mu = tr(A)/n;
-        A = A-mu*speye(n);
+        A = A - mu * I;
     end
 
     if !force_estm
