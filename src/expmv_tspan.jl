@@ -68,7 +68,7 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
             c1 = norm(z, Inf)
 
             p = 1
-            while p <= m_opt
+            for outer p = 1:m_opt
                 if p > m
                     @views K[:,p+1] .= (h/p).*(A*K[:,p])
                 end
@@ -80,7 +80,6 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
                     break
                 end
                 c1 = c2
-                p += 1
             end
 
             m = max(m,p)
