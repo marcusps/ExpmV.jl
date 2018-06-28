@@ -31,33 +31,27 @@ Eg. `t = 1.`, or `t = linspace(0, 1, 100)`.
 
 ## Benchmarks
 
-Although both the `ExpmV.jl` and `Expokit.jl` implementations are in the early stages of development (`ExpmV.jl` is a direct translation of MATLAB code, and `Expokit.jl` is not fully optimized), here are some crude benchmarks (using `Benchmark.jl`) that indicate large gains over the dense `expm`. Source can be found in `test\benchmark.jl`.
+This benchmark shows the performance of `ExpmV` compared to [Expokit.jl](https://github.com/acroy/Expokit.jl) and the builtin dense `expm` of Julia, for complex matrices with  (confidence interval 5%). The benchmark is done using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) and the script in `benchmark/compare.jl`.
 
-**Benchmark 1**: Complex matrix with density of 0.0191, dimension 100, 100 trials
+### Matrix density 0.01
+| Matrix rows                   |  `Expm` | `Expokit` | `Expmv`               |
+|-----------------------|---------:|-----------:|-------:|
+| 32      | 158.495 μs  |  30.100 μs  |  53.609 μs|
+| 64      | 856.923 μs  |  52.036 μs  |  58.536 μs|
+| 128     |   7.805 ms  | 537.083 μs  |  80.650 μs|
+| 256     |  40.027 ms  |   2.993 ms  | 112.047 μs|
+| 512     | 277.680 ms  |   3.195 ms  | 218.490 μs|
+| 1024    |    1.902 s  |   4.267 ms  | 571.590 μs|
 
-| Row | Function             | Average     | Relative | Replications |
-|-----|----------------------|-------------|----------|--------------|
-| 1   | `Expmv.jl`           | 0.0213879  | 5.24362  | 100          |
-| 2   | `Expokit.jl`         | 0.00407885 | 1.0      | 100          |
-| 3   | Julia's dense `expm` | 0.0686303  | 16.8259  | 100          |
-
-**Benchmark 2**: Complex matrix with density of 0.1913, dimension 100, 100 trials
-
-| Row | Function             | Average    | Relative | Replications |
-|-----|----------------------|------------|----------|--------------|
-| 1   | `Expmv.jl`           | 0.00602035 | 1.74028  | 100          |
-| 2   | `Expokit.jl`         | 0.00345941 | 1.0      | 100          |
-| 3   | Julia's dense `expm` | 0.0275519  | 7.96434  | 100          |
-
-**Benchmark 3**: Complex matrix with density of 0.3651, dimension 100, 100 trials
-
-| Row | Function             | Average    | Relative | Replications |
-|-----|----------------------|------------|----------|--------------|
-| 1   | `Expmv.jl`           | 0.0105414  | 1.97621  | 100          |
-| 2   | `Expokit.jl`         | 0.00533413 | 1.0      | 100          |
-| 3   | Julia's dense `expm` | 0.0354484  | 6.64558  | 100          |
-
-Clearly the current `ExpmV.jl` implementation needs to be looked at more carefully (See [Issue #1](https://github.com/marcusps/ExpmV.jl/issues/1) in particular, which appears to cause a bottle neck due to my incomplete implementation)
+### Matrix density 0.001
+| Matrix rows                   |  `Expm` | `Expokit` | `Expmv`               |
+|-----------------------|---------:|-----------:|-------:|
+| 32      |  31.147 μs  | 12.144 μs  | 55.103 μs |
+| 64      | 471.424 μs  | 15.816 μs  | 53.599 μs |
+| 128     |   7.368 ms  | 34.339 μs  | 60.320 μs |
+| 256     |  27.817 ms  | 61.137 μs  | 76.773 μs |
+| 512     | 325.282 ms  |182.016 μs  |142.402 μs |
+| 1024    |    1.568 s  |  2.137 ms  |306.293 μs |
 
 ## License
 
