@@ -18,7 +18,7 @@ The original code can be found at [Matlabcentral File Exchange](http://www.mathw
 Install into Julia using the package manager:
 
 ```julia
-Pkg.clone("git@github.com:matteoacrossi/ExpmV.jl.git", "ExpmV")
+Pkg.add("ExpmV")
 ```
 
  ## Usage
