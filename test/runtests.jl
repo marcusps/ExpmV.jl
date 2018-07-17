@@ -26,7 +26,7 @@ using SparseArrays
                 t = range(0, stop=rt, length=nt)
                 x = expmv(t,r,rv)
                 y = hcat([expmv(ti,r,rv) for ti in t]...)
-                @test x ≈ y atol=1.0e-10
+                @test x ≈ y atol=1.0e-9
             end
 
             @testset "Second dim: $d2" for d2 in 2:4
