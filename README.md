@@ -9,7 +9,7 @@ function for computing `expm(t*A)*v` when `A` is sparse, without explicitly comp
 
 If `t` is a `StepRangeLen` object (i. e. a `linspace`), use an optimized algorithm to output the result for all `t`.
 
-The original code can be found at [Matlabcentral File Exchange](http://www.mathworks.com/matlabcentral/fileexchange/29576-matrix-exponential-times-a-vector/all_files), and the theory is explained in the following article:
+The original code can be found at (https://github.com/higham/expmv), and the theory is explained in the following article:
 
 *Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators*, Awad H. Al-Mohy and Nicholas J. Higham, SIAM Journal on Scientific Computing 2011 33:2, 488-511. ([preprint](http://eprints.ma.man.ac.uk/1426/))
 
@@ -31,7 +31,7 @@ Eg. `t = 1.`, or `t = linspace(0, 1, 100)`.
 
 ## Benchmarks
 
-This benchmark shows the performance of `ExpmV` compared to [Expokit.jl](https://github.com/acroy/Expokit.jl) and the builtin dense `expm` of Julia, for complex matrices with  (confidence interval 5%). The benchmark is done using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) and the script in `benchmark/compare.jl`.
+This benchmark shows the performance of `ExpmV` compared to [Expokit.jl](https://github.com/acroy/Expokit.jl) and the builtin dense `expm` of Julia, for complex, non-Hermitian matrices. The benchmark is done using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) on a Macbook Pro 2016 with 2,9 GHz Intel Core i5 and 16 GB RAM. The script is in `benchmark/compare.jl`.
 
 ### Matrix density 0.01
 | Matrix rows                   |  `Expm` | `Expokit` | `Expmv`               |
