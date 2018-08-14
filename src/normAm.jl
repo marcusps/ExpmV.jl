@@ -1,9 +1,5 @@
-if VERSION < v"0.7-"
-    nothing
-else
-    using LinearAlgebra
-    using SparseArrays
-end
+using LinearAlgebra
+using SparseArrays
 
 function normAm(A,m)
     #NORMAM   Estimate of 1-norm of power of matrix.

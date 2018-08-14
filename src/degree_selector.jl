@@ -1,9 +1,5 @@
-if VERSION < v"0.7-"
-    nothing
-else
-    using LinearAlgebra
-    using SparseArrays
-end
+using LinearAlgebra
+using SparseArrays
 
 function degree_selector(t, M, U, p)
     C = ceil.(abs.(t)*M)'*U
