@@ -1,4 +1,5 @@
-using BenchmarkTools, ExpmV
+using BenchmarkTools, SparseArrays, LinearAlgebra
+using ExpmV
 
 const SUITE = BenchmarkGroup()
 
