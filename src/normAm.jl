@@ -16,16 +16,17 @@ function normAm(A,m)
     n = size(A, 1);
 
     if isequal(A, abs.(A))
-        e = ones(n,1);
+        e = ones(n,1)
+        f = similar(e)
         for j=1:m         # for positive matrices only
-            At_mul_B!(e,A,e)
+            mul!(f, A, e)
+            copyto!(e, f)
         end
-        c = norm(e,Inf);
+        c = norm(e, Inf)
         mv = m;
     else
         c,mv = norm1est(m,A,t)
     end
 
     return c
-
 end
