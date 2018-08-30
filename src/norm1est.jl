@@ -28,9 +28,8 @@
 # SOFTWARE.
 
 function A_pow_n_B!(res, x, n::Int, y)
-    if n < 1
-        error("")
-    end
+    @assert n >= 1 "Only positive powers of x allowed"
+
     tmp = similar(y)
     #tmp2 = similar(y)
     mul!(res, x, y)
@@ -41,10 +40,8 @@ function A_pow_n_B!(res, x, n::Int, y)
     #copyto!(res, tmp)
 end
 
-function At_pow_n_B!(res,x,n::Int,y)
-    if n < 1
-        error("")
-    end
+function At_pow_n_B!(res, x , n::Int, y)
+    @assert n >= 1 "Only positive powers of x allowed"
     tmp = similar(y)
     mul!(res, transpose(x), y)
     for i in 1:n-1
@@ -54,18 +51,22 @@ function At_pow_n_B!(res,x,n::Int,y)
 end
 
 function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(size(A)))) where T
+    # Effectively implements Algorithm 2.4 of Higham, Tisseur, SIAM J. Mat. Anal. Appl. 21, 1185 (2000)
+    # The first argument is the power to which A is raised.
+
     maxiter = 5
     # Check the input
-    if size(A,1) != size(A,2)
-        error("Matrix exponential only defined for square matrices")
-    end
+    @assert size(A,1) == size(A,2) "Matrix exponential only defined for square matrices"
+
     n = size(A,1)
+
     if t <= 0
         throw(ArgumentError("number of blocks must be a positive integer"))
     end
     if t > n
         throw(ArgumentError("number of blocks must not be greater than $n"))
     end
+
     ind = Array{Int64}(undef, n)
     ind_hist = Array{Int64}(undef, maxiter * t)
 
@@ -79,9 +80,9 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         end
     end
 
-    function _any_abs_eq(v,n::Int)
+    function _any_abs_eq(v, n::Int)
         for i in eachindex(v)
-            if abs(v[i])==n
+            if abs(v[i]) == n
                 return true
             end
         end
@@ -96,9 +97,9 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
     X[1:n,1] .= 1
     for j = 2:t
         while true
-            _rand_pm1!(view(X,1:n,j))
+            _rand_pm1!(view(X,1:n,j)) # Chose random
             yaux = X[1:n,j]' * X[1:n,1:j-1]
-            if !_any_abs_eq(yaux,n)
+            if !_any_abs_eq(yaux, n)
                 break
             end
         end
@@ -117,6 +118,9 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         est = zero(real(eltype(Y)))
 
         est_ind = 0
+
+        # Find the best estimate by looking at the maximum 1-norm of the columns of Y
+        # and save its position
         for i = 1:t
             y = norm(Y[1:n, i], 1)
             if y > est
@@ -124,23 +128,33 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
                 est_ind = i
             end
         end
+
         if iter == 1
             est_old = est
         end
+
         if est > est_old || iter == 2
             ind_best = est_ind
         end
+
+        # If, after the second iteration, the estimate is smaller than before,
+        # break, cause we have found the best lower bound
         if iter >= 2 && est <= est_old
             est = est_old
             break
         end
+
         est_old = est
         S_old = copy(S)
+        
         for j = 1:t
             for i = 1:n
                 S[i,j] = Y[i,j] == 0 ? one(Y[i,j]) : sign(Y[i,j])
             end
         end
+
+        # TODO: Check if every column of S is parallel to a column of S_old:
+        #       you should break in this case
 
         if T <: Real
             # Check wether cols of S are parallel to cols of S or S_old
@@ -229,5 +243,5 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
             end
         end
     end
-    return est, iter
+    return est
 end
