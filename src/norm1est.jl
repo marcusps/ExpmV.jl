@@ -43,9 +43,9 @@ end
 function At_pow_n_B!(res, x , n::Int, y)
     @assert n >= 1 "Only positive powers of x allowed"
     tmp = similar(y)
-    mul!(res, transpose(x), y)
+    mul!(res, adjoint(x), y)
     for i in 1:n-1
-        mul!(tmp, transpose(x), res)
+        mul!(tmp, adjoint(x), res)
         copyto!(res, tmp)
     end
 end
@@ -146,7 +146,7 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
 
         est_old = est
         S_old = copy(S)
-        
+
         for j = 1:t
             for i = 1:n
                 S[i,j] = Y[i,j] == 0 ? one(Y[i,j]) : sign(Y[i,j])
