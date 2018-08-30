@@ -71,7 +71,7 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
 
     Ti = typeof(float(zero(T)))
 
-    S = zeros(T <: Real ? Int : Ti, n, t)
+    S = zeros(Ti, n, t)
 
     function _rand_pm1!(v)
         for i in eachindex(v)
@@ -169,7 +169,7 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         end
 
         # Use the conjugate transpose
-        At_pow_n_B!(Y,A,m,X)
+        At_pow_n_B!(Z, A, m, S)
         h_max = zero(real(eltype(Z)))
         h = zeros(real(eltype(Z)), n)
         h_ind = 0
