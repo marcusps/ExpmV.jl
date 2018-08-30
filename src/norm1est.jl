@@ -143,7 +143,6 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         end
 
         if T <: Real
-            prinln(" Checking parallel columns")
             # Check wether cols of S are parallel to cols of S or S_old
             for j = 1:t
                 while true
