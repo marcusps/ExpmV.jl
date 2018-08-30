@@ -46,14 +46,14 @@ function expmv(t::Number, A::SparseMatrixCSC, b::VecOrMat; M = nothing,
           2.0^(-10)
       end
 
-    s = 1;
+    s = 1
 
     if t == 0
-        m = 0;
+        m = 0
     else
-        (m_max,p) = size(M);
-        U = diagm(0 => 1:m_max);
-        C = ((ceil.(abs.(tt)*M))'*U );
+        (m_max,p) = size(M)
+        U = diagm(0 => 1:m_max)
+        C = ((ceil.(abs.(tt)*M))'*U )
 
         C[C .== 0] .= Inf
 
@@ -66,33 +66,33 @@ function expmv(t::Number, A::SparseMatrixCSC, b::VecOrMat; M = nothing,
             cost = 0
         end
 
-        s = max(cost/m,1);
+        s = max(cost/m,1)
     end
 
-    eta = 1;
+    eta = 1
 
     if shift
         eta = exp(t*mu/s)
     end
 
-    f = b;
+    f = b
 
     for i = 1:s
-        c1 = norm(b,Inf);
+        c1 = norm(b,Inf)
         for k = 1:m
-            b = (t/(s*k))*(A*b);
-            f =  f + b;
-            c2 = norm(b,Inf);
+            b = (t/(s*k))*(A*b)
+            f += b
+            c2 = norm(b,Inf)
             if !full_term
                 if c1 + c2 <= tol*norm(f,Inf)
                     break
                 end
-                c1 = c2;
+                c1 = c2
             end
 
         end
-        f = eta*f
-        b = f
+        f .*= eta
+        copyto!(b, f)
     end
 
     return f
