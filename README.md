@@ -13,6 +13,8 @@ The original code can be found at (https://github.com/higham/expmv), and the the
 
 *Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators*, Awad H. Al-Mohy and Nicholas J. Higham, SIAM Journal on Scientific Computing 2011 33:2, 488-511. ([preprint](http://eprints.ma.man.ac.uk/1426/))
 
+The fast 1-norm estimation that is crucial for the speed of this algorithm is adapted from code available in Julia's `Base` module. This function (`norm1est`) is licensed under the MIT license.
+
 ## Installation
 
 Install into Julia using the package manager:
