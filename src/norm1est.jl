@@ -29,13 +29,11 @@
 
 function A_pow_n_B!(res, x, n::Integer, y)
     tmp = similar(y)
-    #tmp2 = similar(y)
     mul!(res, x, y)
     for i in 1:n-1
         mul!(tmp, x, res)
         copyto!(res, tmp)
     end
-    #copyto!(res, tmp)
 end
 
 function At_pow_n_B!(res, x , n::Integer, y)
