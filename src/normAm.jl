@@ -1,6 +1,3 @@
-using LinearAlgebra
-using SparseArrays
-
 function normAm(A,m)
     #NORMAM   Estimate of 1-norm of power of matrix.
     #   NORMAM(A,m) estimates norm(A^m,1).
@@ -14,58 +11,22 @@ function normAm(A,m)
 
     #   Awad H. Al-Mohy and Nicholas J. Higham, September 7, 2010.
 
-    t = 1; # Number of columns used by NORMEST1.
+    t = 2; # Number of columns used by NORMEST1.
 
-    n = size(A,1);
-
-    # function afun_power(flag,X)
-    #     #AFUN_POWER  Function to evaluate matrix products needed by NORMEST1.
-    #
-    #     if flag == "dim"
-    #         Z = n;
-    #     elseif flag == "real"
-    #         if isreal(A)
-    #             Z = 1
-    #         else
-    #             Z = 0
-    #         end
-    #     else
-    #         (p,q) = size(X);
-    #         if p != n,
-    #             error("Dimension mismatch")
-    #         end
-    #
-    #         if flag=="notransp"
-    #             for i = 1:m
-    #                 X = A*X;
-    #             end
-    #         elseif flag=="transp"
-    #             for i = 1:m
-    #                 X = A'*X
-    #             end
-    #         end
-    #
-    #         Z = X;
-    #
-    #     end
-    #
-    #     return Z
-    # end
-
-
-    if isequal(A, abs.(A))
-        e = ones(n,1);
-        for j=1:m         # for positive matrices only
-            e = A'*e;
+    n = size(A, 1);
+    if eltype(A) <: Real
+        if sum(A.nzval .< 0) == 0 # for positive matrices only
+            e = ones(n,1)
+            f = similar(e)
+            for j=1:m
+                mul!(f, A, e)
+                copyto!(e, f)
+            end
+            return norm(e, Inf)
+        else
+            return norm1est(m, A, t)
         end
-        c = norm(e,Inf);
-
     else
-        #(c,_,_,it) = normest1(@afun_power,t);
-        #mv = it[2]*t*m;
-        c = norm(A^m,1);
+        return norm1est(m,A,t)
     end
-
-    return c
-
 end

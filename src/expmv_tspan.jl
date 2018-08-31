@@ -42,8 +42,8 @@ function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
         A = A - mu * I
     end
 
-    d = max(1, Int(floor(q/s)))
-    j = Int(floor(q/d))
+    d = max(1, Integer(floor(q/s)))
+    j = Integer(floor(q/d))
     r = q - d * j
     z = X[:,1]
     m_opt, = degree_selector(d, M, U, p)
