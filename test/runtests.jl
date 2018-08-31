@@ -21,7 +21,7 @@ using SparseArrays
                 x = expmv(rt,r,rv)
 
                 @testset "Against expm" begin
-                    @test norm(x-exp(Matrix(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
+                    @test x ≈ exp(Matrix(rt*r))*rv
                 end
 
                 # Test the StepRangeLen version against the normal version
@@ -29,7 +29,7 @@ using SparseArrays
                     t = range(0, stop=rt, length=nt)
                     x = expmv(t,r,rv)
                     y = hcat([expmv(ti,r,rv) for ti in t]...)
-                    @test x ≈ y atol=1.0e-9
+                    @test x ≈ y
                 end
 
                 @testset "Second dim: $d2" for d2 in 2:4
@@ -37,7 +37,7 @@ using SparseArrays
                     rv = rv*diagm(0 => [1.0/norm(rv[:,j],2) for j in 1:d2])
 
                     x = expmv(rt,r,rv)
-                    @test norm(x-exp(Matrix(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
+                    @test x ≈ exp(Matrix(rt*r))*rv
                 end
             end
         end
@@ -46,7 +46,7 @@ end
 
 @testset "Complex matrices" begin
     @testset "Hermitian: $herm"  for herm in [true, false]
-        @testset "Size: $d" for d in 10:10:60
+        @testset "Size: $d" for d in 10:20:70
             for i = 1:10
                 r = sprandn(d,d,.1)+1im*sprandn(d,d,.1)
                 if herm
@@ -60,7 +60,7 @@ end
 
                 x = expmv(rt,r,rv)
                 @testset "Against expm" begin
-                    @test norm(x-exp(Matrix(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
+                    @test x ≈ exp(Matrix(rt*r))*rv
                 end
 
                 # Test the StepRangeLen version against the normal version
@@ -68,7 +68,7 @@ end
                     t = range(0, stop=rt, length=nt)
                     x = expmv(t,r,rv)
                     y = hcat([expmv(ti,r,rv) for ti in t]...)
-                    @test x ≈ y atol=1.0e-9
+                    @test x ≈ y
                 end
 
                 @testset "Second dim: $d2" for d2 in 2:4
@@ -76,7 +76,7 @@ end
                     rv = rv*diagm(0 => [1.0/norm(rv[:,j],2) for j in 1:d2])
 
                     x = expmv(rt,r,rv)
-                    @test norm(x-exp(Matrix(rt*r))*rv,2) ≈ 0.0 atol=1.0e-9
+                    @test x ≈ exp(Matrix(rt*r))*rv
                 end
             end
         end
