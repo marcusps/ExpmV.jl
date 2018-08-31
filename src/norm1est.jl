@@ -28,8 +28,6 @@
 # SOFTWARE.
 
 function A_pow_n_B!(res, x, n::Integer, y)
-    @assert n >= 1 "Only positive powers of x allowed"
-
     tmp = similar(y)
     #tmp2 = similar(y)
     mul!(res, x, y)
@@ -41,7 +39,6 @@ function A_pow_n_B!(res, x, n::Integer, y)
 end
 
 function At_pow_n_B!(res, x , n::Integer, y)
-    @assert n >= 1 "Only positive powers of x allowed"
     tmp = similar(y)
     mul!(res, adjoint(x), y)
     for i in 1:n-1
