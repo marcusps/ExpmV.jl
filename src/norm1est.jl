@@ -27,7 +27,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-function A_pow_n_B!(res, x, n::Int, y)
+function A_pow_n_B!(res, x, n::Integer, y)
     @assert n >= 1 "Only positive powers of x allowed"
 
     tmp = similar(y)
@@ -40,7 +40,7 @@ function A_pow_n_B!(res, x, n::Int, y)
     #copyto!(res, tmp)
 end
 
-function At_pow_n_B!(res, x , n::Int, y)
+function At_pow_n_B!(res, x , n::Integer, y)
     @assert n >= 1 "Only positive powers of x allowed"
     tmp = similar(y)
     mul!(res, adjoint(x), y)
@@ -67,8 +67,8 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         throw(ArgumentError("number of blocks must not be greater than $n"))
     end
 
-    ind = Array{Int64}(undef, n)
-    ind_hist = Array{Int64}(undef, maxiter * t)
+    ind = Array{Integer}(undef, n)
+    ind_hist = Array{Integer}(undef, maxiter * t)
 
     Ti = typeof(float(zero(T)))
 
@@ -80,7 +80,7 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         end
     end
 
-    function _any_abs_eq(v, n::Int)
+    function _any_abs_eq(v, n::Integer)
         for i in eachindex(v)
             if abs(v[i]) == n
                 return true
