@@ -27,20 +27,21 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-function A_pow_n_B!(res, x, n::Integer, y)
-    tmp = similar(y)
-    mul!(res, x, y)
+
+function A_pow_n_B!(res, A, n::Integer, v)
+    tmp = similar(v)
+    mul!(res, A, v)
     for i in 1:n-1
-        mul!(tmp, x, res)
+        mul!(tmp, A, res)
         copyto!(res, tmp)
     end
 end
 
-function At_pow_n_B!(res, x , n::Integer, y)
-    tmp = similar(y)
-    mul!(res, adjoint(x), y)
+function At_pow_n_B!(res, A, n::Integer, v)
+    tmp = similar(v)
+    mul!(res, adjoint(A), v)
     for i in 1:n-1
-        mul!(tmp, adjoint(x), res)
+        mul!(tmp, adjoint(A), res)
         copyto!(res, tmp)
     end
 end
