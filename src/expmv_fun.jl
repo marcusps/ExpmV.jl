@@ -25,6 +25,12 @@ function expmv(t::Number, A, b::VecOrMat; M = nothing,
                 precision = "double", shift = false, full_term = false)
     n = size(A, 1)
 
+    if shift == true && !hasmethod(tr, typeof(A))
+        shift = false
+        @warn "Shift set to false as $(typeof(A)) doesn't support tr"
+    end
+
+    mu = 0.
     if shift
         mu = tr(A)/n
         A = A - mu*I

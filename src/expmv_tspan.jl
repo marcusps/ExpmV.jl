@@ -1,15 +1,22 @@
 using LinearAlgebra
 using SparseArrays
 
-function expmv(t::StepRangeLen, A::SparseMatrixCSC, b::Vector;
-                M = nothing, precision = "double", shift = true)
+function expmv(t::StepRangeLen, A, b::Vector;
+                M = nothing, precision = "double", shift = false)
 
     t0 = Float64(t.ref)
     tmax = Float64(t.ref + (t.len - 1.) * t.step)
     q = t.len - 1
     n = size(A, 1)
 
-    force_estm = false; temp = (tmax -t0)*norm(A, 1);
+    if shift == true && !hasmethod(tr, typeof(A))
+        shift = false
+        @warn "Shift set to false as $(typeof(A)) doesn't support tr"
+    end
+
+    force_estm = !hasmethod(opnorm, Tuple{typeof(A), typeof(1)})
+    temp = (tmax - t0) * normAm(A, 1);
+
     if (precision == "single" || precision == "half" && temp > 85.496) || ( precision == "double" && temp > 63.152)
        force_estm = true;
     end
