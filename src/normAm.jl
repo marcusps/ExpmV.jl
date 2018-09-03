@@ -14,19 +14,6 @@ function normAm(A,m)
     t = 2; # Number of columns used by NORMEST1.
 
     n = size(A, 1);
-    if eltype(A) <: Real
-        if sum(A.nzval .< 0) == 0 # for positive matrices only
-            e = ones(n,1)
-            f = similar(e)
-            for j=1:m
-                mul!(f, A, e)
-                copyto!(e, f)
-            end
-            return norm(e, Inf)
-        else
-            return norm1est(m, A, t)
-        end
-    else
-        return norm1est(m,A,t)
-    end
+
+    return norm1est(m,A,t)
 end

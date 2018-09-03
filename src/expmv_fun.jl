@@ -21,7 +21,7 @@ a parameter (or a `StepRangeLen` object representing a range of values).
 * `full_term = false`: set to `true` to evaluate the full Taylor expansion instead
         of truncating when reaching the required precision
 """
-function expmv(t::Number, A::SparseMatrixCSC, b::VecOrMat; M = nothing,
+function expmv(t::Number, A, b::VecOrMat; M = nothing,
                 precision = "double", shift = false, full_term = false)
     n = size(A, 1)
 
