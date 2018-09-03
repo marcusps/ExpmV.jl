@@ -82,6 +82,7 @@ function select_taylor_degree(A,
     end
 
     if !force_estm
+        @assert hasmethod(opnorm, Tuple{typeof(A), typeof(1)}) "opnorm not defined for $typeof(A)"
         normA = opnorm(A,1)
     end
 
