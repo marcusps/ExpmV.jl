@@ -46,7 +46,7 @@ function select_taylor_degree(A,
                               precision = "double",
                               shift = false,
                               # bal,
-                              force_estm = false)
+                              force_estm = true)
 
     #SELECT_TAYLOR_DEGREE   Select degree of Taylor approximation.
     #   [M,MV,alpha,unA] = SELECT_TAYLOR_DEGREE(A,m_max,p_max) forms a matrix M
@@ -76,12 +76,13 @@ function select_taylor_degree(A,
           theta_half
       end
 
-    if shift
+    if shift && hasmethod(tr, typeof(A))
         mu = tr(A)/n
         A -= mu * I
     end
 
     if !force_estm
+        @assert hasmethod(opnorm, Tuple{typeof(A), typeof(1)}) "opnorm not defined for $typeof(A)"
         normA = opnorm(A,1)
     end
 

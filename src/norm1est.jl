@@ -46,7 +46,7 @@ function At_pow_n_B!(res, A, n::Integer, v)
     end
 end
 
-function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(size(A)))) where T
+function norm1est(m::Integer, A, t::Integer = min(2,maximum(size(A))))
     # Effectively implements Algorithm 2.4 of Higham, Tisseur, SIAM J. Mat. Anal. Appl. 21, 1185 (2000)
     # The first argument is the power to which A is raised.
 
@@ -66,8 +66,8 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
     ind = Array{Integer}(undef, n)
     ind_hist = Array{Integer}(undef, maxiter * t)
 
-    Ti = typeof(float(zero(T)))
-
+    #Ti = typeof(float(zero(T)))
+    Ti = eltype(A)
     S = zeros(Ti, n, t)
 
     function _rand_pm1!(v)
@@ -152,7 +152,7 @@ function norm1est(m::Integer, A::SparseMatrixCSC{T}, t::Integer = min(2,maximum(
         # TODO: Check if every column of S is parallel to a column of S_old:
         #       you should break in this case
 
-        if T <: Real
+        if Ti <: Real
             # Check wether cols of S are parallel to cols of S or S_old
             for j = 1:t
                 while true
