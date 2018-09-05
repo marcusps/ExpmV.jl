@@ -13,7 +13,6 @@ The original code can be found at (https://github.com/higham/expmv), and the the
 
 *Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators*, Awad H. Al-Mohy and Nicholas J. Higham, SIAM Journal on Scientific Computing 2011 33:2, 488-511. ([preprint](http://eprints.ma.man.ac.uk/1426/))
 
-The fast 1-norm estimation that is crucial for the speed of this algorithm is adapted from code available in Julia's `Base` module. This function (`norm1est`) is licensed under the MIT license.
 
 ## Installation
 
@@ -57,4 +56,4 @@ This benchmark shows the performance of `ExpmV` compared to [Expokit.jl](https:/
 
 ## License
 
-Released under the [BSD 2-clause license](https://tldrlegal.com/license/bsd-2-clause-license-(freebsd)) used in Al-Mohy and  Higham's original code.
+Released under the [BSD 2-clause license](https://tldrlegal.com/license/bsd-2-clause-license-(freebsd)) used in Al-Mohy and  Higham's original code, with the exception of function `norm1est`: the fast 1-norm estimation that is crucial for the speed of this algorithm is adapted from code available in Julia's `Base` module. This function (`norm1est`) is licensed under the MIT license.
