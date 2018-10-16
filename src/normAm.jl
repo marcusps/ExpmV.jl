@@ -1,4 +1,4 @@
-function normAm(A,m)
+function normAm(A,m)::Real
     #NORMAM   Estimate of 1-norm of power of matrix.
     #   NORMAM(A,m) estimates norm(A^m,1).
     #   If A has nonnegative elements the estimate is exact.
@@ -27,5 +27,5 @@ function normAm(A,m)
             end
         end
     end
-    return norm1est(m, A, t)
+    return norm1est(A, m, t)
 end

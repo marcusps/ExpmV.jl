@@ -46,7 +46,7 @@ function At_pow_n_B!(res, A, n::Integer, v)
     end
 end
 
-function norm1est(m::Integer, A, t::Integer = min(2,maximum(size(A))))::Real
+function norm1est(A, m::Integer, t::Integer = min(2,maximum(size(A))))::Real
     # Effectively implements Algorithm 2.4 of Higham, Tisseur, SIAM J. Mat. Anal. Appl. 21, 1185 (2000)
     # The first argument is the power to which A is raised.
 
