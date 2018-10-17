@@ -32,27 +32,8 @@ Eg. `t = 1.`, or `t = linspace(0, 1, 100)`.
 
 ## Benchmarks
 
-This benchmark shows the performance of `ExpmV` compared to [Expokit.jl](https://github.com/acroy/Expokit.jl) and the builtin dense `expm` of Julia, for complex, non-Hermitian matrices. The benchmark is done using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl) on a Macbook Pro 2016 with 2,9 GHz Intel Core i5 and 16 GB RAM. The script is in `benchmark/compare.jl`.
+Need to run updated benchmarks on Julia v1.0
 
-### Matrix density 0.01
-| Matrix rows                   |  `Expm` | `Expokit` | `Expmv`               |
-|-----------------------|---------:|-----------:|-------:|
-| 32      | 158.495 μs  |  30.100 μs  |  53.609 μs|
-| 64      | 856.923 μs  |  52.036 μs  |  58.536 μs|
-| 128     |   7.805 ms  | 537.083 μs  |  80.650 μs|
-| 256     |  40.027 ms  |   2.993 ms  | 112.047 μs|
-| 512     | 277.680 ms  |   3.195 ms  | 218.490 μs|
-| 1024    |    1.902 s  |   4.267 ms  | 571.590 μs|
-
-### Matrix density 0.001
-| Matrix rows                   |  `Expm` | `Expokit` | `Expmv`               |
-|-----------------------|---------:|-----------:|-------:|
-| 32      |  31.147 μs  | 12.144 μs  | 55.103 μs |
-| 64      | 471.424 μs  | 15.816 μs  | 53.599 μs |
-| 128     |   7.368 ms  | 34.339 μs  | 60.320 μs |
-| 256     |  27.817 ms  | 61.137 μs  | 76.773 μs |
-| 512     | 325.282 ms  |182.016 μs  |142.402 μs |
-| 1024    |    1.568 s  |  2.137 ms  |306.293 μs |
 
 ## License
 
