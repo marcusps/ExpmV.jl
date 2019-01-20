@@ -1,7 +1,7 @@
 name = "ExpmV"
 uuid = "e7fedf88-7a0b-11e8-3562-f39b41888c88"
 authors = ["Matteo Rossi <teo.red90@gmail.com>"]
-version = "0.1.2"
+version = "0.1.3"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
