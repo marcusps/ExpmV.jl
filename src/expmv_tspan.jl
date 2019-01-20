@@ -1,7 +1,7 @@
 using LinearAlgebra
 using SparseArrays
 
-function expmv(t::StepRangeLen, A, b::Vector;
+function expmv(t::StepRangeLen, A, b::AbstractVecOrMat;
                 M = nothing, precision = "double", shift = false)
 
     t0 = Float64(t.ref)
